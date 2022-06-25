@@ -10,6 +10,10 @@ interface EnvironmentVariables extends DotenvParseOutput {
   TELSTAT_PORT: string;
   PRIVATE_KEY_FILENAME: string;
   PUBLIC_KEY_FILENAME: string;
+  MQTT_BROKER_HOST: string;
+  MQTT_BROKER_PORT: string;
+  MQTT_BROKER_USER: string;
+  MQTT_BROKER_PASS: string;
 }
 
 const namespace = "app.telstat";
@@ -28,6 +32,10 @@ class Config {
   public readonly port: number;
   public readonly privateKey: string;
   public readonly publicKey: string;
+  public readonly mqttBrokerHost: string;
+  public readonly mqttBrokerPort: number;
+  public readonly mqttBrokerUser: string;
+  public readonly mqttBrokerPass: string;
 
   constructor(props: EnvironmentVariables, namespace: string) {
     this.namespace = namespace;
@@ -38,6 +46,10 @@ class Config {
     this.port = Number(props.TELSTAT_PORT);
     this.privateKey = this.readKeyFile(props.PRIVATE_KEY_FILENAME);
     this.publicKey = this.readKeyFile(props.PUBLIC_KEY_FILENAME);
+    this.mqttBrokerHost = props.MQTT_BROKER_HOST;
+    this.mqttBrokerPort = Number(props.MQTT_BROKER_PORT) || 1883;
+    this.mqttBrokerUser = props.MQTT_BROKER_USER;
+    this.mqttBrokerPass = props.MQTT_BROKER_PASS;
   }
 
   private readKeyFile(filename: string) {
