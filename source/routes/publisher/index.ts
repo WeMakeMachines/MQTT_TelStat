@@ -29,17 +29,17 @@ router.post(
 
 router.get("/all", getAllPublishers);
 
-router.get("/:publisherId", getPublisher);
-
-router.delete("/:publisherId", validatePublisherOwner, deletePublisher);
+router.get("/", getPublisher);
 
 router.patch(
-  "/:publisherId",
+  "/",
   validatePublisherOwner,
   validatePublisherName(),
   handleValidationErrors,
   sanitisePublisherName(),
   renamePublisher
 );
+
+router.delete("/", validatePublisherOwner, deletePublisher);
 
 export default router;

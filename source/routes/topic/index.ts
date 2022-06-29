@@ -4,6 +4,7 @@ import { handleValidationErrors } from "../../middleware/validation";
 import { validateTopicName, sanitiseTopicName } from "./middleware";
 import { authoriseUser } from "../../middleware/authorisation";
 import {
+  addPublisherToTopic,
   createTopic,
   deleteTopic,
   getAllTopics,
@@ -25,12 +26,10 @@ router.post(
 
 router.get("/all", getAllTopics);
 
-router.get("/:topicId", getTopic);
-
-router.delete("/:topicId", deleteTopic);
+router.get("/", getTopic);
 
 router.patch(
-  "/",
+  "/rename",
   validateTopicName(),
   handleValidationErrors,
   sanitiseTopicName(),
@@ -38,5 +37,7 @@ router.patch(
 );
 
 router.patch("/add-publisher", addPublisherToTopic);
+
+router.delete("/", deleteTopic);
 
 export default router;

@@ -44,7 +44,7 @@ export async function getPublisher(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { publisherId } = req.params;
+    const { publisherId } = req.body;
 
     // TODO Remove casting here
     const publisher = <PublisherType>await PublishersDAO.getById(publisherId);
@@ -85,8 +85,7 @@ export async function renamePublisher(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { name } = req.body;
-    const { publisherId } = req.params;
+    const { name, publisherId } = req.body;
 
     await PublishersDTO.rename({
       publisherId,
@@ -109,7 +108,7 @@ export async function deletePublisher(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { publisherId } = req.params;
+    const { publisherId } = req.body;
 
     await PublishersDTO.delete(publisherId);
 

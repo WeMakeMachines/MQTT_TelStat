@@ -31,7 +31,7 @@ export async function createTopic(
 
 export async function getTopic(req: Request, res: TypedResponse<JsonResponse>) {
   try {
-    const { topicId } = req.params;
+    const { topicId } = req.body;
     const topic = await TopicsDAO.getById(topicId);
 
     res.status(StatusCodes.OK).json({
@@ -70,8 +70,7 @@ export async function renameTopic(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { topicId } = req.params;
-    const { name } = req.body;
+    const { name, topicId } = req.body;
 
     await TopicsDTO.rename({ topicId, name });
 
@@ -91,7 +90,7 @@ export async function deleteTopic(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { topicId } = req.params;
+    const { topicId } = req.body;
 
     await TopicsDTO.delete(topicId);
 
@@ -110,7 +109,7 @@ export async function addPublisherToTopic(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { topicId, publisherId } = req.body;
+    const { publisherId, topicId } = req.body;
 
     await TopicsDTO.addPublisher({ topicId, publisherId });
 

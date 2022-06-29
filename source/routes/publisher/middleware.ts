@@ -23,7 +23,7 @@ export const validatePublisherOwner = async (
   next: NextFunction
 ) => {
   try {
-    const { publisherId } = req.params;
+    const { publisherId } = req.body;
 
     // TODO Remove casting here
     const user = <UserType>req.user;
