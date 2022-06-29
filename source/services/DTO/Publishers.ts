@@ -47,4 +47,14 @@ export default class PublishersDTO {
       return Promise.reject((error as Error).message);
     }
   }
+
+  public static async publishTelemetry(publisherId: string, telemetry: any) {
+    try {
+      await Publishers.findByIdAndUpdate(publisherId, { $push: { telemetry } });
+
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject((error as Error).message);
+    }
+  }
 }
