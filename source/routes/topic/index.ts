@@ -37,4 +37,6 @@ router.patch(
   renameTopic
 );
 
+router.patch("/add-publisher", addPublisherToTopic);
+
 export default router;

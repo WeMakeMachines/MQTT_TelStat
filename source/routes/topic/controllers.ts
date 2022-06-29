@@ -104,3 +104,22 @@ export async function deleteTopic(
       .json({ success: false, message: "An error occurred" });
   }
 }
+
+export async function addPublisherToTopic(
+  req: Request,
+  res: TypedResponse<JsonResponse>
+) {
+  try {
+    const { topicId, publisherId } = req.body;
+
+    await TopicsDTO.addPublisher({ topicId, publisherId });
+
+    res
+      .status(StatusCodes.OK)
+      .json({ success: true, message: "Publisher added to topic" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ success: false, message: "An error occurred" });
+  }
+}
