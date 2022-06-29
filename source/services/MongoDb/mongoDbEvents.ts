@@ -1,32 +1,21 @@
-import debug from "debug";
-import mongoose from "mongoose";
+import { Connection } from "mongoose";
 
-import config from "../../config/";
+import { log } from "./";
 
-const log: debug.IDebugger = debug(config.namespace + ":service:mongodb");
+export default function mongoDbEvents(connection: Connection) {
+  connection.on("connecting", () => log("Connecting to MongoDB..."));
 
-export default function mongoDbEvents() {
-  mongoose.connection.on("connecting", () => {
-    log("Connecting to MongoDB...");
-  });
+  connection.on("connected", () => log("Connected to MongoDB"));
 
-  mongoose.connection.on("connected", () => {
-    log("Connected to MongoDB");
-  });
+  connection.on("reconnected", () => log("Reconnected to MongoDB"));
 
-  mongoose.connection.on("reconnected", () => {
-    log("Reconnected to MongoDB");
-  });
+  connection.on("reconnectFailed", () =>
+    log("Reached number of reconnect tries... unable to reconnect to MongoDB")
+  );
 
-  mongoose.connection.on("reconnectFailed", () => {
-    log("Reached number of reconnect tries... unable to reconnect to MongoDB");
-  });
+  connection.on("error", (exception: Error) =>
+    log("Error connecting to MongoDB: " + exception.message)
+  );
 
-  mongoose.connection.on("error", (exception: Error) => {
-    log("Error connecting to MongoDB: " + exception.message);
-  });
-
-  mongoose.connection.on("disconnected", () => {
-    log("Disconnected from MongoDB");
-  });
+  connection.on("disconnected", () => log("Disconnected from MongoDB"));
 }
