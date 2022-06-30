@@ -19,6 +19,9 @@ export default class PublisherSchema {
   })
   public owner!: Ref<UserSchema>;
 
+  @prop({ default: null })
+  public lastPublishDate!: Date;
+
   @prop({ required: true, unique: true })
   public name!: string;
 

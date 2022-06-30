@@ -50,7 +50,10 @@ export default class PublishersDTO {
 
   public static async publishTelemetry(publisherId: string, telemetry: any) {
     try {
-      await Publishers.findByIdAndUpdate(publisherId, { $push: { telemetry } });
+      await Publishers.findByIdAndUpdate(publisherId, {
+        $push: { telemetry },
+        lastPublishDate: Date.now(),
+      });
 
       return Promise.resolve();
     } catch (error) {

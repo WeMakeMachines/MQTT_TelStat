@@ -6,7 +6,7 @@ export default class PublishersDAO {
     publisherId: string
   ): Promise<PublisherType | null> {
     return Publishers.findById(publisherId)
-      .select(["label", "telemetry"])
+      .select(["name", "lastPublishDate", "telemetry"])
       .lean();
   }
 
