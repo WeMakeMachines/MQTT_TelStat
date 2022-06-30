@@ -122,3 +122,23 @@ export async function deletePublisher(
       .json({ success: false, message: "An error occurred" });
   }
 }
+
+export async function deletePublisherTelemetry(
+  req: RequestWithUser,
+  res: TypedResponse<JsonResponse>
+) {
+  try {
+    const { publisherId } = req.body;
+
+    await PublishersDTO.deleteTelemetry(publisherId);
+
+    res
+      .status(StatusCodes.OK)
+      .json({ success: true, message: "Telemetry deleted" });
+  } catch (error) {
+    log(error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ success: false, message: "An error occurred" });
+  }
+}

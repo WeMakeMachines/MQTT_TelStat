@@ -48,6 +48,18 @@ export default class PublishersDTO {
     }
   }
 
+  public static async deleteTelemetry(publisherId: string) {
+    try {
+      await Publishers.findByIdAndUpdate(publisherId, {
+        $unset: { lastPublishDate: "", telemetry: "" },
+      });
+
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject((error as Error).message);
+    }
+  }
+
   public static async publishTelemetry(publisherId: string, telemetry: any) {
     try {
       await Publishers.findByIdAndUpdate(publisherId, {

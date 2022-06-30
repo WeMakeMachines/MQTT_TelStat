@@ -10,6 +10,7 @@ import { authoriseUser } from "../../middleware/authorisation";
 import {
   createPublisher,
   deletePublisher,
+  deletePublisherTelemetry,
   getAllPublishers,
   getPublisher,
   renamePublisher,
@@ -31,15 +32,18 @@ router.get("/all", getAllPublishers);
 
 router.get("/", getPublisher);
 
+router.use(validatePublisherOwner);
+
+router.patch("/delete-telemetry", deletePublisherTelemetry);
+
 router.patch(
   "/",
-  validatePublisherOwner,
   validatePublisherName(),
   handleValidationErrors,
   sanitisePublisherName(),
   renamePublisher
 );
 
-router.delete("/", validatePublisherOwner, deletePublisher);
+router.delete("/", deletePublisher);
 
 export default router;
