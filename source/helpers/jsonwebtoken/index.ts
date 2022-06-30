@@ -12,7 +12,7 @@ export default class Jwt {
     const expiresIn = "1d";
     const payload: JwtPayload = {
       sub: user._id,
-      iat: Date.now(),
+      iat: Math.floor(Date.now() / 1000) - 30,
     };
 
     try {
@@ -20,6 +20,8 @@ export default class Jwt {
         expiresIn,
         algorithm: "RS256",
       });
+
+      //jwt.sign({ user: "testuser" }, secret.secretToken, { expiresIn: "1h" });
 
       return Promise.resolve(signedToken);
     } catch (error) {
