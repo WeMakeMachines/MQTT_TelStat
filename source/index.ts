@@ -5,27 +5,23 @@ import express from "express";
 import http from "http";
 
 import config from "./config/";
+import dbConfig from "./config/db";
 import routes from "./routes";
 import MongoDb from "./services/MongoDb";
-import mqttClient from "./services/mqttClient";
+import mqttSubscriber from "./services/mqttSubscriber";
 
 const log: debug.IDebugger = debug(config.namespace);
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
 
 MongoDb.connect({
-  username: config.dbUser,
-  password: config.dbPass,
-  host: config.dbHost,
-  dbName: config.dbName,
+  username: dbConfig.dbUser,
+  password: dbConfig.dbPass,
+  host: dbConfig.dbHost,
+  dbName: dbConfig.dbName,
 });
 
-mqttClient.connect({
-  host: config.mqttBrokerHost,
-  username: config.mqttBrokerUser,
-  password: config.mqttBrokerPass,
-  port: config.mqttBrokerPort,
-});
+mqttSubscriber.initialise();
 
 app.use(express.json());
 app.use(cors());
