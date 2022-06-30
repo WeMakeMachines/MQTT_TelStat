@@ -23,14 +23,14 @@ export async function createPublisher(
     // TODO Remove casting here
     const user = <UserType>req.user;
 
-    await PublishersDTO.create({
+    const publisher = await PublishersDTO.create({
       userId: user._id,
       name,
     });
 
     res
       .status(StatusCodes.OK)
-      .json({ success: true, message: "Publisher created" });
+      .json({ success: true, message: "Publisher created", data: publisher });
   } catch (error) {
     log(error);
     res

@@ -9,12 +9,12 @@ export default class PublishersDTO {
     name: string;
   }) {
     try {
-      await Publishers.create({
+      const publisher = await Publishers.create({
         owner: userId,
         name,
       });
 
-      return Promise.resolve();
+      return Promise.resolve(publisher);
     } catch (error) {
       return Promise.reject((error as Error).message);
     }
