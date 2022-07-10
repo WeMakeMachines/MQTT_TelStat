@@ -3,7 +3,7 @@ import Topics from "../../models/Topic";
 export default class TopicsDTO {
   public static async create(name: string) {
     try {
-      const topicExists = await Topics.find({ name });
+      const topicExists = await Topics.findOne({ name }).lean();
 
       if (topicExists) throw "Topic already exists";
 
