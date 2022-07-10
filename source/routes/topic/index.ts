@@ -24,20 +24,20 @@ router.post(
   createTopic
 );
 
-router.get("/all", getAllTopics);
+router.get("/list", getAllTopics);
 
-router.get("/", getTopic);
+router.get("/:topicId", getTopic);
 
 router.patch(
-  "/rename",
+  "/rename/:topicId",
   validateTopicName(),
   handleValidationErrors,
   sanitiseTopicName(),
   renameTopic
 );
 
-router.patch("/add-publisher", addPublisherToTopic);
+router.patch("/add-publisher/:topicId", addPublisherToTopic);
 
-router.delete("/", deleteTopic);
+router.delete("/:topicId", deleteTopic);
 
 export default router;

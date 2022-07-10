@@ -12,7 +12,7 @@ import {
   deletePublisher,
   deletePublisherTelemetry,
   getPublisherList,
-  getPublisherByNanoId,
+  getPublisherById,
   renamePublisher,
 } from "./controllers";
 
@@ -30,20 +30,20 @@ router.post(
 
 router.get("/list", getPublisherList);
 
-router.get("/", getPublisherByNanoId);
+router.get("/:publisherId", getPublisherById);
 
 router.use(validatePublisherOwner);
 
-router.patch("/delete-telemetry", deletePublisherTelemetry);
+router.patch("/delete-telemetry/:publisherId", deletePublisherTelemetry);
 
 router.patch(
-  "/",
+  "/rename/:publisherId",
   validatePublisherName(),
   handleValidationErrors,
   sanitisePublisherName(),
   renamePublisher
 );
 
-router.delete("/", deletePublisher);
+router.delete("/:publisherId", deletePublisher);
 
 export default router;

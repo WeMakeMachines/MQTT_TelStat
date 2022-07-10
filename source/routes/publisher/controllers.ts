@@ -39,15 +39,15 @@ export async function createPublisher(
   }
 }
 
-export async function getPublisherByNanoId(
+export async function getPublisherById(
   req: Request,
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { nanoId } = req.body;
+    const { publisherId } = req.params;
 
     // TODO Remove casting here
-    const publisher = <PublisherType>await PublishersDAO.getByNanoId(nanoId);
+    const publisher = <PublisherType>await PublishersDAO.getById(publisherId);
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -85,7 +85,8 @@ export async function renamePublisher(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { name, publisherId } = req.body;
+    const { publisherId } = req.params;
+    const { name } = req.body;
 
     await PublishersDTO.rename({
       publisherId,
@@ -108,7 +109,7 @@ export async function deletePublisher(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { publisherId } = req.body;
+    const { publisherId } = req.params;
 
     await PublishersDTO.delete(publisherId);
 
@@ -128,7 +129,7 @@ export async function deletePublisherTelemetry(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { publisherId } = req.body;
+    const { publisherId } = req.params;
 
     await PublishersDTO.deleteTelemetry(publisherId);
 
