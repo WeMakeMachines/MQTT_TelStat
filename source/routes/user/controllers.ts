@@ -30,7 +30,7 @@ export async function createUser(
 
     res.status(StatusCodes.OK).json({ success: true, message: "User created" });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: (error as Error).message });
@@ -54,7 +54,7 @@ export async function getUser(
       },
     });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -81,7 +81,7 @@ export async function updateUser(
 
     res.status(StatusCodes.OK).json({ success: true, message: "User updated" });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
