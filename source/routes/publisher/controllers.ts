@@ -39,15 +39,15 @@ export async function createPublisher(
   }
 }
 
-export async function getPublisher(
+export async function getPublisherByNanoId(
   req: Request,
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const { publisherId } = req.body;
+    const { nanoId } = req.body;
 
     // TODO Remove casting here
-    const publisher = <PublisherType>await PublishersDAO.getById(publisherId);
+    const publisher = <PublisherType>await PublishersDAO.getByNanoId(nanoId);
 
     res.status(StatusCodes.OK).json({
       success: true,

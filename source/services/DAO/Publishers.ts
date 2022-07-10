@@ -10,7 +10,15 @@ export default class PublishersDAO {
       .lean();
   }
 
-  public static async getOwner(
+  public static async getByNanoId(
+    nanoId: string
+  ): Promise<PublisherType | null> {
+    return Publishers.findOne({ nanoid: nanoId })
+      .select(["name", "lastPublishDate", "telemetry"])
+      .lean();
+  }
+
+  public static async getOwnerProtected(
     publisherId: string
   ): Promise<Pick<PublisherType, "owner"> | null> {
     return Publishers.findById(publisherId)

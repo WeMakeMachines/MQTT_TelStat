@@ -12,7 +12,7 @@ import {
   deletePublisher,
   deletePublisherTelemetry,
   getPublisherList,
-  getPublisher,
+  getPublisherByNanoId,
   renamePublisher,
 } from "./controllers";
 
@@ -30,7 +30,7 @@ router.post(
 
 router.get("/list", getPublisherList);
 
-router.get("/", getPublisher);
+router.get("/", getPublisherByNanoId);
 
 router.use(validatePublisherOwner);
 
