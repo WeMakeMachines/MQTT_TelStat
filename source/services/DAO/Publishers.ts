@@ -16,7 +16,10 @@ export default class PublishersDAO {
     return Publishers.findById(publisherId).lean().select("owner");
   }
 
-  public static async getAll() {
-    return Publishers.find().lean().select("-telemetry");
+  public static async getList() {
+    return Publishers.find()
+      .lean()
+      .select("-telemetry")
+      .populate("owner", ["userName"]);
   }
 }

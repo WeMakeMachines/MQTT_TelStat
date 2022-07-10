@@ -61,12 +61,12 @@ export async function getPublisher(
   }
 }
 
-export async function getAllPublishers(
+export async function getPublisherList(
   req: Request,
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const publishers = await PublishersDAO.getAll();
+    const publishers = await PublishersDAO.getList();
 
     res.status(StatusCodes.OK).json({
       success: true,

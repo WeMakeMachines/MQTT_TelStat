@@ -11,7 +11,7 @@ import {
   createPublisher,
   deletePublisher,
   deletePublisherTelemetry,
-  getAllPublishers,
+  getPublisherList,
   getPublisher,
   renamePublisher,
 } from "./controllers";
@@ -28,7 +28,7 @@ router.post(
   createPublisher
 );
 
-router.get("/all", getAllPublishers);
+router.get("/list", getPublisherList);
 
 router.get("/", getPublisher);
 
