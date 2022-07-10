@@ -22,7 +22,7 @@ export async function createTopic(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Topic created" });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -39,7 +39,7 @@ export async function getTopic(req: Request, res: TypedResponse<JsonResponse>) {
       data: topic,
     });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -58,7 +58,7 @@ export async function getAllTopics(
       data: topics,
     });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -79,7 +79,7 @@ export async function renameTopic(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Topic renamed" });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -99,6 +99,7 @@ export async function deleteTopic(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Topic deleted" });
   } catch (error) {
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -119,6 +120,7 @@ export async function addPublisherToTopic(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher added to topic" });
   } catch (error) {
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });

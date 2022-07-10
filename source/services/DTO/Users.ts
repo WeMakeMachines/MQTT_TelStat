@@ -2,8 +2,6 @@ import bcrypt from "bcrypt";
 
 import Users from "../../models/User";
 
-class UsersDTO_Error extends Error {}
-
 export default class UsersDTO {
   public static async createUser({
     userName,
@@ -32,7 +30,7 @@ export default class UsersDTO {
 
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject((error as Error).message);
+      return Promise.reject(error);
     }
   }
 
@@ -68,7 +66,7 @@ export default class UsersDTO {
 
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject((error as Error).message);
+      return Promise.reject(error);
     }
   }
 }

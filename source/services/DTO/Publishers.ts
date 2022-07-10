@@ -16,7 +16,7 @@ export default class PublishersDTO {
 
       return Promise.resolve(publisher);
     } catch (error) {
-      return Promise.reject((error as Error).message);
+      return Promise.reject(error);
     }
   }
 
@@ -34,7 +34,7 @@ export default class PublishersDTO {
 
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject((error as Error).message);
+      return Promise.reject(error);
     }
   }
 
@@ -44,7 +44,7 @@ export default class PublishersDTO {
 
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject((error as Error).message);
+      return Promise.reject(error);
     }
   }
 
@@ -56,7 +56,7 @@ export default class PublishersDTO {
 
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject((error as Error).message);
+      return Promise.reject(error);
     }
   }
 
@@ -69,7 +69,7 @@ export default class PublishersDTO {
 
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject((error as Error).message);
+      return Promise.reject(error);
     }
   }
 }

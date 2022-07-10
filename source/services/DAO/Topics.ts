@@ -1,5 +1,7 @@
 import Topics from "../../models/Topic";
 
+class TopicsDAO_Error extends Error {}
+
 export default class TopicsDAO {
   public static async getById(id: string) {
     return Topics.findById(id).lean().populate("publishers", ["name"]);
@@ -28,7 +30,9 @@ export default class TopicsDAO {
       return Promise.resolve();
     }
 
-    return Promise.reject("Topic name and publisher ID mismatch");
+    return Promise.reject(
+      new TopicsDAO_Error("Topic name and publisher ID mismatch")
+    );
   }
 
   public static async getAll() {

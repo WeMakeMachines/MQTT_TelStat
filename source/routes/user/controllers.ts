@@ -10,6 +10,8 @@ import UsersDTO from "../../services/DTO/Users";
 
 const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
 
+class UserControllerError extends Error {}
+
 export async function createUser(
   req: Request,
   res: TypedResponse<JsonResponse>
@@ -19,7 +21,7 @@ export async function createUser(
 
     const userNameTaken = await UsersDAO.getUserByUsername(userName);
 
-    if (userNameTaken) throw new Error("Username already taken");
+    if (userNameTaken) throw new UserControllerError("Username already taken");
 
     await UsersDTO.createUser({
       userName,

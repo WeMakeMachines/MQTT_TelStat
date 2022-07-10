@@ -6,6 +6,8 @@ interface PublisherWithOwner extends PublisherType {
   owner: UserType;
 }
 
+class PublishersDAO_Error extends Error {}
+
 export default class PublishersDAO {
   public static async getById(
     publisherId: string
@@ -19,7 +21,7 @@ export default class PublishersDAO {
       .lean();
 
     if (!publisher) {
-      return Promise.reject(new Error("Publisher not found"));
+      return Promise.reject(new PublishersDAO_Error("Publisher not found"));
     }
 
     return publisher._id;

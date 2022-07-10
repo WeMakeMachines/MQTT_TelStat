@@ -1,3 +1,3 @@
-![Logo](./assets/logo.svg)
+![Logo](source/client/src/assets/logo.svg)
 # TelStat
 Telemetry Station

@@ -34,7 +34,7 @@ export async function createPublisher(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher created", data: publisher });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -56,7 +56,7 @@ export async function getPublisherById(
       data: publisher,
     });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -75,7 +75,7 @@ export async function getPublisherList(
       data: publishers,
     });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -99,7 +99,7 @@ export async function renamePublisher(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher renamed" });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -128,7 +128,7 @@ export async function deletePublisher(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher deleted" });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
@@ -148,7 +148,7 @@ export async function deletePublisherTelemetry(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Telemetry deleted" });
   } catch (error) {
-    log(error);
+    log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An error occurred" });
