@@ -24,7 +24,7 @@ MongoDb.connect({
 mqttSubscriber.initialise();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
 
 app.use("/api", routes);

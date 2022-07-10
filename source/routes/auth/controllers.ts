@@ -30,6 +30,7 @@ export async function loginUser(
       .cookie(config.jwtCookieName, token, {
         httpOnly: true,
         secure: true,
+        sameSite: "strict",
       })
       .json({
         success: true,
