@@ -8,6 +8,8 @@ import { PublisherType } from "../../types/schemas/Publisher";
 import { UserType } from "../../types/schemas/User";
 import PublishersDAO from "../../services/DAO/Publishers";
 import PublishersDTO from "../../services/DTO/Publishers";
+import TopicsDAO from "../../services/DAO/Topics";
+import TopicsDTO from "../../services/DTO/Topics";
 
 const log: debug.IDebugger = debug(
   config.namespace + ":controllers:publishers"
@@ -112,6 +114,15 @@ export async function deletePublisher(
     const { publisherId } = req.params;
 
     await PublishersDTO.delete(publisherId);
+
+    const topics = await TopicsDAO.getAllTopicsForPublisher(publisherId);
+
+    topics.forEach((topic) => {
+      TopicsDTO.removePublisher({
+        topicId: topic._id,
+        publisherId,
+      });
+    });
 
     res
       .status(StatusCodes.OK)
