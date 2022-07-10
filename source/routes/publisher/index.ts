@@ -32,18 +32,21 @@ router.get("/list", getPublisherList);
 
 router.get("/:publisherId", getPublisherById);
 
-router.use(validatePublisherOwner);
-
-router.patch("/delete-telemetry/:publisherId", deletePublisherTelemetry);
+router.patch(
+  "/delete-telemetry/:publisherId",
+  validatePublisherOwner,
+  deletePublisherTelemetry
+);
 
 router.patch(
   "/rename/:publisherId",
+  validatePublisherOwner,
   validatePublisherName(),
   handleValidationErrors,
   sanitisePublisherName(),
   renamePublisher
 );
 
-router.delete("/:publisherId", deletePublisher);
+router.delete("/:publisherId", validatePublisherOwner, deletePublisher);
 
 export default router;

@@ -30,7 +30,7 @@ export const validatePublisherOwner = async (
     const publisher = await PublishersDAO.getOwnerProtected(publisherId);
 
     if (!publisher) throw new Error("Publisher not found");
-    if (!user._id.equals(publisher.owner)) throw new Error("Id mismatch");
+    if (!user._id.equals(publisher.owner._id)) throw new Error("Id mismatch");
 
     next();
   } catch (error) {
