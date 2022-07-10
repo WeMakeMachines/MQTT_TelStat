@@ -1,26 +1,33 @@
 import Publishers from "../../models/Publisher";
 import { PublisherType } from "../../types/schemas/Publisher";
+import { UserType } from "../../types/schemas/User";
+
+interface PublisherWithOwner extends PublisherType {
+  owner: UserType;
+}
 
 export default class PublishersDAO {
   public static async getById(
     publisherId: string
   ): Promise<PublisherType | null> {
-    return Publishers.findById(publisherId)
-      .select(["name", "lastPublishDate", "telemetry"])
-      .lean();
+    return Publishers.findById(publisherId).lean();
   }
 
-  public static async getByNanoId(
-    nanoId: string
-  ): Promise<PublisherType | null> {
-    return Publishers.findOne({ nanoid: nanoId })
-      .select(["name", "lastPublishDate", "telemetry"])
+  public static async getIdFromNanoId(nanoId: string): Promise<string> {
+    const publisher = await Publishers.findOne({ nanoId })
+      .select(["_id"])
       .lean();
+
+    if (!publisher) {
+      return Promise.reject(new Error("Publisher not found"));
+    }
+
+    return publisher._id;
   }
 
   public static async getOwnerProtected(
     publisherId: string
-  ): Promise<Pick<PublisherType, "owner"> | null> {
+  ): Promise<PublisherWithOwner | null> {
     return Publishers.findById(publisherId)
       .lean()
       .select("owner")

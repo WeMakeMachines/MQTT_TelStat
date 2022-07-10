@@ -7,13 +7,14 @@ import MongoDb from "../../MongoDb";
 import mqttClient from "../../mqttClient";
 import TopicsDAO from "../../DAO/Topics";
 import PublishersDTO from "../../DTO/Publishers";
+import PublishersDAO from "../../DAO/Publishers";
 
 export const log: debug.IDebugger = debug(
   config.namespace + ":mqtt_subscriber"
 );
 
 type Payload = {
-  id: string;
+  nanoId: string;
   data: object;
 };
 
@@ -46,16 +47,20 @@ export default class MqttSubscriber {
       const [topic, payloadAsBuffer] = message;
       const payload = JSON.parse(payloadAsBuffer.toString());
 
-      this.publishMessage(topic, payload);
+      this.publishMessage(topic, payload).catch((error) => log(error));
     });
   }
 
-  private publishMessage(topic: string, payload: Payload) {
-    Promise.all([
-      TopicsDAO.checkPublisherExistsOnTopic(topic, payload.id),
-      PublishersDTO.publishTelemetry(payload.id, payload.data),
-    ]).catch((error) => {
-      log("Unable to publish telemetry: " + error);
-    });
+  private async publishMessage(topic: string, payload: Payload) {
+    try {
+      const publisherId = await PublishersDAO.getIdFromNanoId(payload.nanoId);
+
+      await TopicsDAO.checkPublisherExistsOnTopic(topic, publisherId);
+      await PublishersDTO.publishTelemetry(publisherId, payload.data);
+    } catch (error) {
+      return Promise.reject(
+        "Unable to publish telemetry: " + (error as Error).message
+      );
+    }
   }
 }
