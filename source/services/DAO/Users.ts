@@ -11,4 +11,8 @@ export default class UsersDAO {
   public static async getUserById(id: string): Promise<UserType> {
     return Users.findById(id).lean();
   }
+
+  public static async getUserByIdProtected(id: string): Promise<UserType> {
+    return Users.findById(id).select("-hash").lean();
+  }
 }

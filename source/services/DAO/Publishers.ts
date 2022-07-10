@@ -13,13 +13,16 @@ export default class PublishersDAO {
   public static async getOwner(
     publisherId: string
   ): Promise<Pick<PublisherType, "owner"> | null> {
-    return Publishers.findById(publisherId).lean().select("owner");
+    return Publishers.findById(publisherId)
+      .lean()
+      .select("owner")
+      .populate("owner", ["-hash"]);
   }
 
-  public static async getList() {
+  public static async getListProtected() {
     return Publishers.find()
       .lean()
       .select("-telemetry")
-      .populate("owner", ["userName"]);
+      .populate("owner", ["-hash"]);
   }
 }

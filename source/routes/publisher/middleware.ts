@@ -27,7 +27,7 @@ export const validatePublisherOwner = async (
 
     // TODO Remove casting here
     const user = <UserType>req.user;
-    const publisher = await PublishersDAO.getOwner(publisherId);
+    const publisher = await PublishersDAO.getOwnerProtected(publisherId);
 
     if (!publisher) throw new Error("Publisher not found");
     if (!user._id.equals(publisher.owner)) throw new Error("Id mismatch");

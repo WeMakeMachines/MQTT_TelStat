@@ -66,7 +66,7 @@ export async function getPublisherList(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const publishers = await PublishersDAO.getList();
+    const publishers = await PublishersDAO.getListProtected();
 
     res.status(StatusCodes.OK).json({
       success: true,
