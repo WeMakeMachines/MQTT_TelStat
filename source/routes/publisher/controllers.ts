@@ -4,7 +4,6 @@ import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
-import { PublisherType } from "../../types/schemas/Publisher";
 import { UserType } from "../../types/schemas/User";
 import PublishersDAO from "../../services/DAO/Publishers";
 import PublishersDTO from "../../services/DTO/Publishers";
@@ -47,9 +46,7 @@ export async function getPublisherById(
 ) {
   try {
     const { publisherId } = req.params;
-
-    // TODO Remove casting here
-    const publisher = <PublisherType>await PublishersDAO.getById(publisherId);
+    const publisher = await PublishersDAO.getByIdProtected(publisherId);
 
     res.status(StatusCodes.OK).json({
       success: true,

@@ -27,7 +27,7 @@ export default class PublisherSchema {
   public name!: string;
 
   @prop({ default: null })
-  public lastPublishDate!: Date;
+  public lastPublishDate!: Date | null;
 
   @prop({ type: () => [mongoose.Schema.Types.Mixed] })
   telemetry?: object[];
