@@ -9,5 +9,6 @@
     "strict": true,
     "esModuleInterop": true,
     "inlineSourceMap": true
-  }
+  },
+  "exclude": ["node_modules"]
 }
