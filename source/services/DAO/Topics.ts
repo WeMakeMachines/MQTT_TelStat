@@ -1,20 +1,48 @@
+import mongoose, { FilterQuery } from "mongoose";
+
 import Topics from "../../models/Topic";
+import { TopicType } from "../../types/schemas/Topic";
+
+interface TopicAggregate extends TopicType {
+  totalPublishers: number;
+}
+
+const TopicsAggregate = {
+  addPublisherCount: [
+    {
+      $addFields: {
+        totalPublishers: { $size: "$publishers" },
+      },
+    },
+  ],
+};
 
 class TopicsDAO_Error extends Error {}
 
 export default class TopicsDAO {
-  public static async getById(id: string) {
-    return Topics.findById(id).lean().populate("publishers", ["name"]);
+  public static async getById(
+    topicId: string
+  ): Promise<FilterQuery<TopicAggregate> | null> {
+    const topics = await Topics.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(topicId) },
+      },
+      ...TopicsAggregate.addPublisherCount,
+    ]);
+
+    if (!topics) return Promise.resolve(null);
+
+    return Promise.resolve(topics[0]);
   }
 
-  public static async getAllTopicsForPublisher(publisherId: string) {
-    const topics = await Topics.find({
+  public static async getTopicForPublisher(
+    publisherId: string
+  ): Promise<TopicType | null> {
+    return Topics.findOne({
       publishers: publisherId,
     })
-      .lean()
-      .select("_id");
-
-    return Promise.resolve(topics);
+      .select("_id")
+      .lean();
   }
 
   public static async checkPublisherExistsOnTopic(
@@ -35,7 +63,7 @@ export default class TopicsDAO {
     );
   }
 
-  public static async getAll() {
-    return Topics.find().lean();
+  public static async getAll(): Promise<FilterQuery<TopicAggregate[]>> {
+    return Topics.aggregate([...TopicsAggregate.addPublisherCount]);
   }
 }

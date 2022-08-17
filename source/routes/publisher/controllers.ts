@@ -112,14 +112,14 @@ export async function deletePublisher(
 
     await PublishersDTO.delete(publisherId);
 
-    const topics = await TopicsDAO.getAllTopicsForPublisher(publisherId);
+    const topic = await TopicsDAO.getTopicForPublisher(publisherId);
 
-    topics.forEach((topic) => {
-      TopicsDTO.removePublisher({
+    if (topic) {
+      await TopicsDTO.removePublisher({
         topicId: topic._id,
         publisherId,
       });
-    });
+    }
 
     res
       .status(StatusCodes.OK)
