@@ -29,6 +29,8 @@ export async function createPublisher(
       name,
     });
 
+    await publisher.populate("owner", "-hash");
+
     res
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher created", data: publisher });
