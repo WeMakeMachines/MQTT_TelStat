@@ -37,7 +37,7 @@ export async function loginUser(
       .json({
         success: true,
         data: {
-          id: user._id,
+          _id: user._id,
           userName: user.userName,
           firstName: user.firstName,
           lastName: user.lastName,
