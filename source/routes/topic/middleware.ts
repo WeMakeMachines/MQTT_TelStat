@@ -6,5 +6,7 @@ export const sanitiseTopicName = () => {
   const charsNumbers = "0123456789";
   const charsAz = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 
-  return [body("name").trim().whitelist(`${charsAz}${charsNumbers}`)];
+  return [
+    body("name").trim().whitelist(`${charsAz}${charsNumbers}`).toLowerCase(),
+  ];
 };
