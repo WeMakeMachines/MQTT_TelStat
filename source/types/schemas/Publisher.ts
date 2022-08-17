@@ -20,7 +20,7 @@ export default class PublisherSchema {
   })
   public owner!: Ref<UserSchema>;
 
-  @prop({ required: true, unique: true, default: nanoid(10) })
+  @prop({ required: true, unique: true, default: () => nanoid(10) })
   public nanoId!: string;
 
   @prop({ required: true, unique: true })
