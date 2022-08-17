@@ -15,12 +15,11 @@ export async function createTopic(
 ) {
   try {
     const { name } = req.body;
-
-    await TopicsDTO.create(name);
+    const newTopic = await TopicsDTO.create(name);
 
     res
       .status(StatusCodes.OK)
-      .json({ success: true, message: "Topic created" });
+      .json({ success: true, message: "Topic created", data: newTopic });
   } catch (error) {
     log((error as Error).message);
     res

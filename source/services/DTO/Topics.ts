@@ -1,19 +1,20 @@
 import Topics from "../../models/Topic";
+import { TopicType } from "../../types/schemas/Topic";
 
 class TopicsDTO_Error extends Error {}
 
 export default class TopicsDTO {
-  public static async create(name: string) {
+  public static async create(name: string): Promise<TopicType | Error> {
     try {
       const topicExists = await Topics.findOne({ name }).lean();
 
       if (topicExists) throw new TopicsDTO_Error("Topic already exists");
 
-      await Topics.create({
+      const topic = await Topics.create({
         name,
       });
 
-      return Promise.resolve();
+      return Promise.resolve(topic);
     } catch (error) {
       return Promise.reject(error);
     }
