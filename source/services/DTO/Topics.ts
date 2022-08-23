@@ -83,8 +83,6 @@ export default class TopicsDTO {
       const topic = await Topics.findById(topicId).lean();
 
       if (!topic) throw new TopicsDTO_Error("Topic does not exist");
-      if (topic.publishers.length > 0)
-        throw new TopicsDTO_Error("Topic receiving data; remove devices first");
 
       await Topics.findByIdAndDelete(topicId);
 

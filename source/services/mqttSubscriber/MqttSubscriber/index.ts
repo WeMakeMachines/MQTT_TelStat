@@ -18,6 +18,8 @@ type Payload = {
   data: object;
 };
 
+class MqttSubscriberError extends Error {}
+
 export default class MqttSubscriber {
   public initialise() {
     this.awaitServices().then(() => {
@@ -53,11 +55,15 @@ export default class MqttSubscriber {
 
   private async publishMessage(topic: string, payload: Payload) {
     try {
-      const publisherId = await PublishersDAO.getIdFromNanoId(payload.nanoId);
+      const publisher = await PublishersDAO.getByNanoId(payload.nanoId);
 
-      await TopicsDAO.checkPublisherExistsOnTopic(topic, publisherId);
-      await PublishersDTO.publishTelemetry(publisherId, payload.data);
+      if (topic !== publisher.topic.name)
+        throw new MqttSubscriberError("Publisher topic mismatch");
+
+      await PublishersDTO.publishTelemetry(publisher._id, payload.data);
     } catch (error) {
+      log((error as Error).message);
+
       return Promise.reject(
         "Unable to publish telemetry: " + (error as Error).message
       );

@@ -1,81 +1,34 @@
-import mongoose, { FilterQuery } from "mongoose";
-
 import Publishers from "../../models/Publisher";
 import { PublisherType } from "../../types/schemas/Publisher";
 import { UserType } from "../../types/schemas/User";
+import { TopicType } from "../../types/schemas/Topic";
 
-interface PublisherAggregate extends PublisherType {
+interface PublisherPopulated extends PublisherType {
   owner: UserType;
-  topic: {
-    _id: string | null;
-    name: string | null;
-  };
+  topic: TopicType;
 }
 
-const PublishersAggregate = {
-  lookUpOwnerProtected: [
-    {
-      $lookup: {
-        from: "users",
-        localField: "owner",
-        foreignField: "_id",
-        as: "owner",
-      },
-    },
-    {
-      $addFields: {
-        owner: { $first: "$owner" },
-      },
-    },
-    {
-      $unset: "owner.hash",
-    },
-  ],
-  lookUpTopic: [
-    {
-      $lookup: {
-        from: "topics",
-        localField: "_id",
-        foreignField: "publishers",
-        as: "topic",
-      },
-    },
-    {
-      $unwind: { path: "$topic", preserveNullAndEmptyArrays: true },
-    },
-    {
-      $unset: "topic.publishers",
-    },
-    {
-      $addFields: {
-        topic: { $ifNull: ["$topic", { _id: null, name: null }] },
-      },
-    },
-  ],
-};
+interface PublisherTopicPopulated extends PublisherType {
+  topic: TopicType;
+}
 
 class PublishersDAO_Error extends Error {}
 
 export default class PublishersDAO {
-  public static async getByIdProtected(
+  public static async getById(
     publisherId: string
-  ): Promise<FilterQuery<PublisherAggregate> | null> {
-    const publishers = await Publishers.aggregate([
-      {
-        $match: { _id: new mongoose.Types.ObjectId(publisherId) },
-      },
-      ...PublishersAggregate.lookUpOwnerProtected,
-      ...PublishersAggregate.lookUpTopic,
-    ]);
-
-    if (!publishers) return Promise.resolve(null);
-
-    return Promise.resolve(publishers[0]);
+  ): Promise<PublisherPopulated | null> {
+    return Publishers.findById(publisherId)
+      .populate({ path: "owner", select: "-hash" })
+      .populate({ path: "topic" })
+      .lean();
   }
 
-  public static async getIdFromNanoId(nanoId: string): Promise<string> {
+  public static async getByNanoId(
+    nanoId: string
+  ): Promise<PublisherTopicPopulated> {
     const publisher = await Publishers.findOne({ nanoId })
-      .select(["_id"])
+      .populate({ path: "owner", select: "-hash" })
       .lean();
 
     if (!publisher) {
@@ -85,16 +38,17 @@ export default class PublishersDAO {
     return publisher._id;
   }
 
-  // TODO run performance tests against regular find()
-  public static async getListProtected(): Promise<
-    FilterQuery<PublisherAggregate>[]
-  > {
-    return Publishers.aggregate([
-      ...PublishersAggregate.lookUpOwnerProtected,
-      ...PublishersAggregate.lookUpTopic,
-      {
-        $unset: "telemetry",
-      },
-    ]);
+  public static async getAll(): Promise<PublisherPopulated[]> {
+    return Publishers.find()
+      .populate({ path: "owner", select: "-hash" })
+      .populate({ path: "topic" })
+      .select("-telemetry")
+      .lean();
+  }
+
+  public static async getAllPublisherIdsForTopic(
+    topicId: string
+  ): Promise<PublisherPopulated[]> {
+    return Publishers.find({ topic: topicId }).select(["_id", "name"]).lean();
   }
 }

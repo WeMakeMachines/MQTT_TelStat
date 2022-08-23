@@ -1,5 +1,5 @@
 import debug from "debug";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
@@ -48,7 +48,7 @@ export async function getPublisherById(
 ) {
   try {
     const { publisherId } = req.params;
-    const publisher = await PublishersDAO.getByIdProtected(publisherId);
+    const publisher = await PublishersDAO.getById(publisherId);
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -62,12 +62,12 @@ export async function getPublisherById(
   }
 }
 
-export async function getPublisherList(
+export async function getAllPublishers(
   req: Request,
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const publishers = await PublishersDAO.getListProtected();
+    const publishers = await PublishersDAO.getAll();
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -81,7 +81,7 @@ export async function getPublisherList(
   }
 }
 
-export async function renamePublisher(
+export async function updatePublisherName(
   req: Request,
   res: TypedResponse<JsonResponse>
 ) {
@@ -97,6 +97,27 @@ export async function renamePublisher(
     res
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher renamed" });
+  } catch (error) {
+    log((error as Error).message);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ success: false, message: "An error occurred" });
+  }
+}
+
+export async function updatePublisherTopic(req: Request, res: Response) {
+  try {
+    const { publisherId } = req.params;
+    const { topicId } = req.body;
+
+    await PublishersDTO.changeTopic({
+      publisherId,
+      topicId,
+    });
+
+    res
+      .status(StatusCodes.OK)
+      .json({ success: true, message: "Publisher updated" });
   } catch (error) {
     log((error as Error).message);
     res

@@ -10,9 +10,20 @@ interface TopicAggregate extends TopicType {
 const TopicsAggregate = {
   addPublisherCount: [
     {
+      $lookup: {
+        from: "publishers",
+        localField: "_id",
+        foreignField: "topic",
+        as: "publishers",
+      },
+    },
+    {
       $addFields: {
         totalPublishers: { $size: "$publishers" },
       },
+    },
+    {
+      $unset: "publishers",
     },
   ],
 };

@@ -9,11 +9,12 @@ import {
 import { authoriseUser } from "../../middleware/authorisation";
 import {
   createPublisher,
+  getAllPublishers,
+  getPublisherById,
+  updatePublisherName,
+  updatePublisherTopic,
   deletePublisher,
   deletePublisherTelemetry,
-  getPublisherList,
-  getPublisherById,
-  renamePublisher,
 } from "./controllers";
 
 const router = express.Router();
@@ -28,7 +29,7 @@ router.post(
   createPublisher
 );
 
-router.get("/list", getPublisherList);
+router.get("/list", getAllPublishers);
 
 router.get("/:publisherId", getPublisherById);
 
@@ -44,7 +45,13 @@ router.patch(
   validatePublisherName(),
   handleValidationErrors,
   sanitisePublisherName(),
-  renamePublisher
+  updatePublisherName
+);
+
+router.patch(
+  "/topic/:publisherId",
+  validatePublisherOwner,
+  updatePublisherTopic
 );
 
 router.delete("/:publisherId", validatePublisherOwner, deletePublisher);

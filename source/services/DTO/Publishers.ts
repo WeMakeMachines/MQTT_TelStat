@@ -38,6 +38,32 @@ export default class PublishersDTO {
     }
   }
 
+  public static async changeTopic({
+    publisherId,
+    topicId,
+  }: {
+    publisherId: string;
+    topicId: string | null;
+  }) {
+    try {
+      if (topicId === null) {
+        await Publishers.findByIdAndUpdate(publisherId, {
+          $unset: { topic: "" },
+        });
+
+        return Promise.resolve();
+      }
+
+      await Publishers.findByIdAndUpdate(publisherId, {
+        topic: topicId,
+      });
+
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   public static async delete(publisherId: string) {
     try {
       await Publishers.findByIdAndDelete(publisherId);
