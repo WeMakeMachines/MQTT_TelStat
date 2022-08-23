@@ -6,7 +6,10 @@ import { UserType } from "../../types/schemas/User";
 
 interface PublisherAggregate extends PublisherType {
   owner: UserType;
-  topic?: string;
+  topic: {
+    _id: string | null;
+    name: string | null;
+  };
 }
 
 const PublishersAggregate = {
@@ -38,8 +41,14 @@ const PublishersAggregate = {
       },
     },
     {
+      $unwind: { path: "$topic", preserveNullAndEmptyArrays: true },
+    },
+    {
+      $unset: "topic.publishers",
+    },
+    {
       $addFields: {
-        topic: { $first: "$topic.name" },
+        topic: { $ifNull: ["$topic", { _id: null, name: null }] },
       },
     },
   ],
