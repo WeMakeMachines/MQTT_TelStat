@@ -1,5 +1,7 @@
 import { getModelForClass } from "@typegoose/typegoose";
 
-import Publishers from "../types/schemas/Publisher";
+import Publisher from "../types/schemas/Publisher";
 
-export default getModelForClass(Publishers);
+const PublisherModel = getModelForClass(Publisher);
+
+export { PublisherModel as default };

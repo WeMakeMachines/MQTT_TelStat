@@ -1,4 +1,4 @@
-import Publishers from "../../models/Publisher";
+import Publisher from "../../models/Publisher";
 import { PublisherType } from "../../types/schemas/Publisher";
 import { UserType } from "../../types/schemas/User";
 import { TopicType } from "../../types/schemas/Topic";
@@ -18,7 +18,7 @@ export default class PublishersDAO {
   public static async getById(
     publisherId: string
   ): Promise<PublisherPopulated | null> {
-    return Publishers.findById(publisherId)
+    return Publisher.findById(publisherId)
       .populate({ path: "owner", select: "-hash" })
       .populate({ path: "topic" })
       .lean();
@@ -27,7 +27,7 @@ export default class PublishersDAO {
   public static async getByNanoId(
     nanoId: string
   ): Promise<PublisherTopicPopulated> {
-    const publisher = await Publishers.findOne({ nanoId })
+    const publisher = await Publisher.findOne({ nanoId })
       .populate({ path: "owner", select: "-hash" })
       .lean();
 
@@ -39,7 +39,7 @@ export default class PublishersDAO {
   }
 
   public static async getAll(): Promise<PublisherPopulated[]> {
-    return Publishers.find()
+    return Publisher.find()
       .populate({ path: "owner", select: "-hash" })
       .populate({ path: "topic" })
       .select("-telemetry")
@@ -49,6 +49,6 @@ export default class PublishersDAO {
   public static async getAllPublisherIdsForTopic(
     topicId: string
   ): Promise<PublisherPopulated[]> {
-    return Publishers.find({ topic: topicId }).select(["_id", "name"]).lean();
+    return Publisher.find({ topic: topicId }).select(["_id", "name"]).lean();
   }
 }

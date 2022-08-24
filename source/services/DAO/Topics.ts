@@ -1,13 +1,13 @@
 import mongoose, { FilterQuery } from "mongoose";
 
-import Topics from "../../models/Topic";
+import Topic from "../../models/Topic";
 import { TopicType } from "../../types/schemas/Topic";
 
 interface TopicAggregate extends TopicType {
   totalPublishers: number;
 }
 
-const TopicsAggregate = {
+const TopicAggregate = {
   addPublisherCount: [
     {
       $lookup: {
@@ -28,17 +28,17 @@ const TopicsAggregate = {
   ],
 };
 
-class TopicsDAO_Error extends Error {}
+class TopicDAO_Error extends Error {}
 
 export default class TopicsDAO {
   public static async getById(
     topicId: string
   ): Promise<FilterQuery<TopicAggregate> | null> {
-    const topics = await Topics.aggregate([
+    const topics = await Topic.aggregate([
       {
         $match: { _id: new mongoose.Types.ObjectId(topicId) },
       },
-      ...TopicsAggregate.addPublisherCount,
+      ...TopicAggregate.addPublisherCount,
     ]);
 
     if (!topics) return Promise.resolve(null);
@@ -49,7 +49,7 @@ export default class TopicsDAO {
   public static async getTopicForPublisher(
     publisherId: string
   ): Promise<TopicType | null> {
-    return Topics.findOne({
+    return Topic.findOne({
       publishers: publisherId,
     })
       .select("_id")
@@ -60,7 +60,7 @@ export default class TopicsDAO {
     topicName: string,
     publisherId: string
   ) {
-    const topic = await Topics.findOne({
+    const topic = await Topic.findOne({
       name: topicName,
       publishers: publisherId,
     });
@@ -70,11 +70,11 @@ export default class TopicsDAO {
     }
 
     return Promise.reject(
-      new TopicsDAO_Error("Topic name and publisher ID mismatch")
+      new TopicDAO_Error("Topic name and publisher ID mismatch")
     );
   }
 
   public static async getAll(): Promise<FilterQuery<TopicAggregate[]>> {
-    return Topics.aggregate([...TopicsAggregate.addPublisherCount]);
+    return Topic.aggregate([...TopicAggregate.addPublisherCount]);
   }
 }

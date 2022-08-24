@@ -1,4 +1,4 @@
-import Publishers from "../../models/Publisher";
+import Publisher from "../../models/Publisher";
 
 export default class PublishersDTO {
   public static async create({
@@ -9,7 +9,7 @@ export default class PublishersDTO {
     name: string;
   }) {
     try {
-      const publisher = await Publishers.create({
+      const publisher = await Publisher.create({
         owner: userId,
         name,
       });
@@ -28,7 +28,7 @@ export default class PublishersDTO {
     name: string;
   }) {
     try {
-      await Publishers.findByIdAndUpdate(publisherId, {
+      await Publisher.findByIdAndUpdate(publisherId, {
         name,
       });
 
@@ -47,14 +47,14 @@ export default class PublishersDTO {
   }) {
     try {
       if (topicId === null) {
-        await Publishers.findByIdAndUpdate(publisherId, {
+        await Publisher.findByIdAndUpdate(publisherId, {
           $unset: { topic: "" },
         });
 
         return Promise.resolve();
       }
 
-      await Publishers.findByIdAndUpdate(publisherId, {
+      await Publisher.findByIdAndUpdate(publisherId, {
         topic: topicId,
       });
 
@@ -66,7 +66,7 @@ export default class PublishersDTO {
 
   public static async delete(publisherId: string) {
     try {
-      await Publishers.findByIdAndDelete(publisherId);
+      await Publisher.findByIdAndDelete(publisherId);
 
       return Promise.resolve();
     } catch (error) {
@@ -76,7 +76,7 @@ export default class PublishersDTO {
 
   public static async deleteTelemetry(publisherId: string) {
     try {
-      await Publishers.findByIdAndUpdate(publisherId, {
+      await Publisher.findByIdAndUpdate(publisherId, {
         $unset: { lastPublishDate: "", telemetry: "" },
       });
 
@@ -88,7 +88,7 @@ export default class PublishersDTO {
 
   public static async publishTelemetry(publisherId: string, telemetry: any) {
     try {
-      await Publishers.findByIdAndUpdate(publisherId, {
+      await Publisher.findByIdAndUpdate(publisherId, {
         $push: { telemetry },
         lastPublishDate: Date.now(),
       });

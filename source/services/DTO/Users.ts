@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import Users from "../../models/User";
+import User from "../../models/User";
 
 export default class UsersDTO {
   public static async createUser({
@@ -21,7 +21,7 @@ export default class UsersDTO {
         hash = await bcrypt.hash(password, 12);
       }
 
-      await Users.create({
+      await User.create({
         userName,
         firstName,
         lastName,
@@ -54,7 +54,7 @@ export default class UsersDTO {
         hash = await bcrypt.hash(password, 12);
       }
 
-      await Users.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { userName },
         {
           userName: newUserName,

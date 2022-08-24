@@ -1,5 +1,7 @@
 import { getModelForClass } from "@typegoose/typegoose";
 
-import Topics from "../types/schemas/Topic";
+import Topic from "../types/schemas/Topic";
 
-export default getModelForClass(Topics);
+const TopicModel = getModelForClass(Topic);
+
+export { TopicModel as default };

@@ -1,5 +1,7 @@
 import { getModelForClass } from "@typegoose/typegoose";
 
-import Users from "../types/schemas/User";
+import User from "../types/schemas/User";
 
-export default getModelForClass(Users);
+const UserModel = getModelForClass(User);
+
+export { UserModel as default };

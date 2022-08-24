@@ -1,4 +1,4 @@
-import Topics from "../../models/Topic";
+import Topic from "../../models/Topic";
 import { TopicType } from "../../types/schemas/Topic";
 
 class TopicsDTO_Error extends Error {}
@@ -6,11 +6,11 @@ class TopicsDTO_Error extends Error {}
 export default class TopicsDTO {
   public static async create(name: string): Promise<TopicType | Error> {
     try {
-      const topicExists = await Topics.findOne({ name }).lean();
+      const topicExists = await Topic.findOne({ name }).lean();
 
       if (topicExists) throw new TopicsDTO_Error("Topic already exists");
 
-      const topic = await Topics.create({
+      const topic = await Topic.create({
         name,
       });
 
@@ -28,7 +28,7 @@ export default class TopicsDTO {
     name: string;
   }) {
     try {
-      await Topics.findByIdAndUpdate(topicId, {
+      await Topic.findByIdAndUpdate(topicId, {
         name,
       });
 
@@ -46,7 +46,7 @@ export default class TopicsDTO {
     publisherId: string;
   }) {
     try {
-      const topic = await Topics.findById(topicId);
+      const topic = await Topic.findById(topicId);
 
       if (!topic) throw new TopicsDTO_Error("Topic does not exist");
 
@@ -66,7 +66,7 @@ export default class TopicsDTO {
     publisherId: string;
   }) {
     try {
-      const topic = await Topics.findById(topicId);
+      const topic = await Topic.findById(topicId);
 
       if (!topic) throw new TopicsDTO_Error("Topic does not exist");
 
@@ -80,11 +80,11 @@ export default class TopicsDTO {
 
   public static async delete(topicId: string) {
     try {
-      const topic = await Topics.findById(topicId).lean();
+      const topic = await Topic.findById(topicId).lean();
 
       if (!topic) throw new TopicsDTO_Error("Topic does not exist");
 
-      await Topics.findByIdAndDelete(topicId);
+      await Topic.findByIdAndDelete(topicId);
 
       return Promise.resolve();
     } catch (error) {
