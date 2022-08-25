@@ -51,4 +51,18 @@ export default class MqttClient {
       log("Subscribed to topic " + topic);
     });
   }
+
+  unsubscribe(topic: string | []): void {
+    if (!this.client) {
+      throw new MqttError("Mqtt client not initialised");
+    }
+
+    this.client.unsubscribe(topic, (error: Error) => {
+      if (error) {
+        throw new MqttError(error.message);
+      }
+
+      log("Unsubscribed to topic " + topic);
+    });
+  }
 }

@@ -26,6 +26,11 @@ const TopicAggregate = {
       $unset: "publishers",
     },
   ],
+  isNotDeleting: [
+    {
+      $match: { _deleting: { $exists: false } },
+    },
+  ],
 };
 
 class TopicDAO_Error extends Error {}
@@ -38,6 +43,7 @@ export default class TopicsDAO {
       {
         $match: { _id: new mongoose.Types.ObjectId(topicId) },
       },
+      ...TopicAggregate.isNotDeleting,
       ...TopicAggregate.addPublisherCount,
     ]);
 
@@ -51,6 +57,7 @@ export default class TopicsDAO {
   ): Promise<TopicType | null> {
     return Topic.findOne({
       publishers: publisherId,
+      _deleting: { $exists: false },
     })
       .select("_id")
       .lean();
@@ -75,6 +82,9 @@ export default class TopicsDAO {
   }
 
   public static async getAll(): Promise<FilterQuery<TopicAggregate[]>> {
-    return Topic.aggregate([...TopicAggregate.addPublisherCount]);
+    return Topic.aggregate([
+      ...TopicAggregate.isNotDeleting,
+      ...TopicAggregate.addPublisherCount,
+    ]);
   }
 }

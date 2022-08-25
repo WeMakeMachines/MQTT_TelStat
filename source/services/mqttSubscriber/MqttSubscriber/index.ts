@@ -2,8 +2,9 @@ import debug from "debug";
 import { Packet } from "mqtt";
 import { concat } from "rxjs";
 
+import { topicChange$ } from "../../../models/Topic";
 import config from "../../../config";
-import MongoDb from "../../MongoDb";
+import MongoDb, { OperationTypes } from "../../MongoDb";
 import mqttClient from "../../mqttClient";
 import TopicsDAO from "../../DAO/Topics";
 import PublishersDTO from "../../DTO/Publishers";
@@ -24,7 +25,8 @@ export default class MqttSubscriber {
   public initialise() {
     this.awaitServices().then(() => {
       this.subscribeToTopics();
-      this.subscribeToMessages();
+      this.subscribeToMessageEvents();
+      this.subscribeToTopicChangeEvents();
     });
   }
 
@@ -38,13 +40,36 @@ export default class MqttSubscriber {
     });
   }
 
+  private subscribeToTopic(topicName: string) {
+    mqttClient.subscribe(topicName);
+  }
+
   private subscribeToTopics() {
     TopicsDAO.getAll().then((topics) => {
-      topics.forEach((topic) => mqttClient.subscribe(topic.name));
+      topics.forEach((topic) => this.subscribeToTopic(topic.name));
     });
   }
 
-  private subscribeToMessages() {
+  private unsubscribeFromTopic(topicName: string) {
+    mqttClient.unsubscribe(topicName);
+  }
+
+  private subscribeToTopicChangeEvents() {
+    topicChange$.subscribe((change) => {
+      if (
+        change.operationType === OperationTypes.UPDATE &&
+        change.fullDocument!._deleting
+      ) {
+        this.unsubscribeFromTopic(change.fullDocument!.name);
+      }
+
+      if (change.operationType === OperationTypes.INSERT) {
+        this.subscribeToTopic(change.fullDocument!.name);
+      }
+    });
+  }
+
+  private subscribeToMessageEvents() {
     mqttClient.message$.subscribe((message: [string, Buffer, Packet]) => {
       const [topic, payloadAsBuffer] = message;
       const payload = JSON.parse(payloadAsBuffer.toString());

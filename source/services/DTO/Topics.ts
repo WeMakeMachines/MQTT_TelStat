@@ -84,7 +84,13 @@ export default class TopicsDTO {
 
       if (!topic) throw new TopicsDTO_Error("Topic does not exist");
 
-      await Topic.findByIdAndDelete(topicId);
+      const updatedTopic = await Topic.findByIdAndUpdate(topicId, {
+        _deleting: true,
+      });
+
+      if (updatedTopic) {
+        await updatedTopic.deleteOne();
+      }
 
       return Promise.resolve();
     } catch (error) {

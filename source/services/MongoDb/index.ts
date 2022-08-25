@@ -41,3 +41,14 @@ export default class MongoDb {
       });
   }
 }
+
+export enum OperationTypes {
+  DELETE = "delete",
+  INSERT = "insert",
+  UPDATE = "update",
+  REPLACE = "replace",
+  INVALIDATE = "invalidate",
+  DROP = "drop",
+  DROP_DATABASE = "dropDatabase",
+  RENAME = "rename",
+}
