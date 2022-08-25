@@ -33,8 +33,6 @@ const TopicAggregate = {
   ],
 };
 
-class TopicDAO_Error extends Error {}
-
 export default class TopicsDAO {
   public static async getById(
     topicId: string
@@ -61,24 +59,6 @@ export default class TopicsDAO {
     })
       .select("_id")
       .lean();
-  }
-
-  public static async checkPublisherExistsOnTopic(
-    topicName: string,
-    publisherId: string
-  ) {
-    const topic = await Topic.findOne({
-      name: topicName,
-      publishers: publisherId,
-    });
-
-    if (topic) {
-      return Promise.resolve();
-    }
-
-    return Promise.reject(
-      new TopicDAO_Error("Topic name and publisher ID mismatch")
-    );
   }
 
   public static async getAll(): Promise<FilterQuery<TopicAggregate[]>> {
