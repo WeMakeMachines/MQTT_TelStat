@@ -14,6 +14,8 @@ const log: debug.IDebugger = debug(
   config.namespace + ":controllers:publishers"
 );
 
+class PublisherControllerError extends Error {}
+
 export async function createPublisher(
   req: RequestWithUser,
   res: TypedResponse<JsonResponse>
@@ -38,7 +40,7 @@ export async function createPublisher(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -50,15 +52,23 @@ export async function getPublisherById(
     const { publisherId } = req.params;
     const publisher = await PublishersDAO.getById(publisherId);
 
+    if (!publisher) throw new PublisherControllerError("Publisher not found");
+
     res.status(StatusCodes.OK).json({
       success: true,
       data: publisher,
     });
   } catch (error) {
+    if (error instanceof PublisherControllerError) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ success: false, message: error.message });
+    }
+
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -77,7 +87,7 @@ export async function getAllPublishers(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -101,7 +111,7 @@ export async function updatePublisherName(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -122,7 +132,7 @@ export async function updatePublisherTopic(req: Request, res: Response) {
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -151,7 +161,7 @@ export async function deletePublisher(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -171,6 +181,6 @@ export async function deletePublisherTelemetry(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }

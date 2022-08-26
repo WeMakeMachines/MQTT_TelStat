@@ -27,11 +27,14 @@ export async function createTopic(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
-export async function getTopic(req: Request, res: TypedResponse<JsonResponse>) {
+export async function getTopicById(
+  req: Request,
+  res: TypedResponse<JsonResponse>
+) {
   try {
     const { topicId } = req.params;
     const topic = await TopicsDAO.getById(topicId);
@@ -44,7 +47,7 @@ export async function getTopic(req: Request, res: TypedResponse<JsonResponse>) {
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -63,7 +66,7 @@ export async function getAllTopics(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -84,7 +87,7 @@ export async function updateTopicName(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -110,6 +113,6 @@ export async function deleteTopic(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }

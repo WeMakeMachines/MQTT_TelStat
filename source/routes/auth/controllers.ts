@@ -4,13 +4,12 @@ import { Request } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
+import { UserAuthenticationError } from "../../Errors/User";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
 import Jwt from "../../helpers/jsonwebtoken";
 import UsersDAO from "../../services/DAO/Users";
 
 const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
-
-class AuthControllerError extends Error {}
 
 export async function loginUser(
   req: Request,
@@ -18,12 +17,15 @@ export async function loginUser(
 ) {
   try {
     const { userName, password } = req.body;
+    const user = await UsersDAO.getByUsername(userName);
 
-    const user = await UsersDAO.getUserByUsername(userName);
-    if (!user) throw new AuthControllerError("User does not exist");
+    if (!user)
+      throw new UserAuthenticationError("Username or password incorrect");
 
     const checkPassword = await bcrypt.compare(password, user.hash);
-    if (!checkPassword) throw new AuthControllerError("Passwords do not match");
+
+    if (!checkPassword)
+      throw new UserAuthenticationError("Username or password incorrect");
 
     const token = await Jwt.sign(user);
 
@@ -44,10 +46,17 @@ export async function loginUser(
         },
       });
   } catch (error) {
+    if (error instanceof UserAuthenticationError) {
+      // https://httpwg.org/specs/rfc7235.html#RFC7231
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ success: false, message: error.message });
+    }
+
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: (error as Error).message });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 

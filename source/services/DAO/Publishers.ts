@@ -8,34 +8,21 @@ interface PublisherPopulated extends PublisherType {
   topic: TopicType;
 }
 
-interface PublisherTopicPopulated extends PublisherType {
-  topic: TopicType;
-}
-
-class PublishersDAO_Error extends Error {}
-
 export default class PublishersDAO {
   public static async getById(
     publisherId: string
-  ): Promise<PublisherPopulated | null> {
+  ): Promise<PublisherPopulated> {
     return Publisher.findById(publisherId)
       .populate({ path: "owner", select: "-hash" })
       .populate({ path: "topic" })
       .lean();
   }
 
-  public static async getByNanoId(
-    nanoId: string
-  ): Promise<PublisherTopicPopulated> {
-    const publisher = await Publisher.findOne({ nanoId })
+  public static async getByNanoId(nanoId: string): Promise<PublisherPopulated> {
+    return Publisher.findOne({ nanoId })
       .populate({ path: "owner", select: "-hash" })
+      .populate({ path: "topic" })
       .lean();
-
-    if (!publisher) {
-      return Promise.reject(new PublishersDAO_Error("Publisher not found"));
-    }
-
-    return publisher._id;
   }
 
   public static async getAll(): Promise<PublisherPopulated[]> {

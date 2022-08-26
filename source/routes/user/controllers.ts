@@ -3,14 +3,13 @@ import { Request } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
+import { UserNameUnavailableError } from "../../Errors/User";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
 import { UserType } from "../../types/schemas/User";
 import UsersDAO from "../../services/DAO/Users";
 import UsersDTO from "../../services/DTO/Users";
 
 const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
-
-class UserControllerError extends Error {}
 
 export async function createUser(
   req: Request,
@@ -19,9 +18,12 @@ export async function createUser(
   try {
     const { userName, firstName, lastName, password } = req.body;
 
-    const userNameTaken = await UsersDAO.getUserByUsername(userName);
+    const isUserNameAvailable = await UsersDAO.checkUserNameIsAvailable(
+      userName
+    );
 
-    if (userNameTaken) throw new UserControllerError("Username already taken");
+    if (!isUserNameAvailable)
+      throw new UserNameUnavailableError("Username not available");
 
     await UsersDTO.createUser({
       userName,
@@ -32,10 +34,15 @@ export async function createUser(
 
     res.status(StatusCodes.OK).json({ success: true, message: "User created" });
   } catch (error) {
+    if (error instanceof UserNameUnavailableError) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ success: false, message: error.message });
+    }
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: (error as Error).message });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -59,7 +66,7 @@ export async function getUser(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }
 
@@ -86,6 +93,6 @@ export async function updateUser(
     log((error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+      .json({ success: false, message: "An unspecified error occurred" });
   }
 }

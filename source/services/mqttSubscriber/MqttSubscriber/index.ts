@@ -82,7 +82,10 @@ export default class MqttSubscriber {
     try {
       const publisher = await PublishersDAO.getByNanoId(payload.nanoId);
 
-      if (topic !== publisher.topic.name)
+      if (
+        !publisher.topic ||
+        (publisher.topic && publisher.topic.name !== topic)
+      )
         throw new MqttSubscriberError("Publisher topic mismatch");
 
       await PublishersDTO.publishTelemetry(publisher._id, payload.data);

@@ -6,7 +6,7 @@ import { authoriseUser } from "../../middleware/authorisation";
 import {
   createTopic,
   getAllTopics,
-  getTopic,
+  getTopicById,
   updateTopicName,
   deleteTopic,
 } from "./controllers";
@@ -25,7 +25,7 @@ router.post(
 
 router.get("/list", getAllTopics);
 
-router.get("/:topicId", getTopic);
+router.get("/:topicId", getTopicById);
 
 router.patch(
   "/rename/:topicId",
