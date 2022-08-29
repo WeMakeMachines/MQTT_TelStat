@@ -5,7 +5,6 @@ import { StatusCodes } from "http-status-codes";
 import { PublisherUnavailableError } from "../../Errors/Publisher";
 import { UserAuthorisationError } from "../../Errors/User";
 import { RequestWithUser } from "../../types";
-import { UserType } from "../../types/schemas/User";
 import PublishersDAO from "../../services/DAO/Publishers";
 
 export const validatePublisherName = () => [body("name").isString()];
@@ -26,9 +25,7 @@ export const validatePublisherOwner = async (
 ) => {
   try {
     const { publisherId } = req.params;
-
-    // TODO Remove casting here
-    const user = <UserType>req.user;
+    const user = req.user!;
     const publisher = await PublishersDAO.getById(publisherId);
 
     if (!publisher) throw new PublisherUnavailableError("Publisher not found");

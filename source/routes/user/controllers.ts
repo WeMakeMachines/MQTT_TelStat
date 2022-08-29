@@ -5,7 +5,6 @@ import { StatusCodes } from "http-status-codes";
 import config from "../../config";
 import { UserNameUnavailableError } from "../../Errors/User";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
-import { UserType } from "../../types/schemas/User";
 import UsersDAO from "../../services/DAO/Users";
 import UsersDTO from "../../services/DTO/Users";
 
@@ -51,8 +50,7 @@ export async function getUser(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    // TODO Remove casting here
-    const user = <UserType>req.user;
+    const user = req.user!;
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -77,8 +75,7 @@ export async function updateUser(
   try {
     const { userName: newUserName, firstName, lastName, password } = req.body;
 
-    // TODO Remove casting here
-    const user = <UserType>req.user;
+    const user = req.user!;
 
     await UsersDTO.updateUser({
       userName: user.userName,

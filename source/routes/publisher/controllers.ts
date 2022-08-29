@@ -4,7 +4,6 @@ import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
-import { UserType } from "../../types/schemas/User";
 import PublishersDAO from "../../services/DAO/Publishers";
 import PublishersDTO from "../../services/DTO/Publishers";
 import TopicsDAO from "../../services/DAO/Topics";
@@ -22,10 +21,7 @@ export async function createPublisher(
 ) {
   try {
     const { name } = req.body;
-
-    // TODO Remove casting here
-    const user = <UserType>req.user;
-
+    const user = req.user!;
     const publisher = await PublishersDTO.create({
       userId: user._id,
       name,
