@@ -3,7 +3,7 @@ import { Request } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
-import { TypedResponse, JsonResponse } from "../../types";
+import { TypedResponse, ResponseAsJson } from "../../types/express";
 import PublisherRepository from "../../services/Repositories/Publisher";
 import TopicRepository from "../../services/Repositories/Topic";
 
@@ -13,7 +13,7 @@ class TopicControllerError extends Error {}
 
 export async function createTopic(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { name } = req.body;
@@ -32,7 +32,7 @@ export async function createTopic(
 
 export async function getTopicById(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { topicId } = req.params;
@@ -52,7 +52,7 @@ export async function getTopicById(
 
 export async function getAllTopics(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const topics = await TopicRepository.getAll();
@@ -71,7 +71,7 @@ export async function getAllTopics(
 
 export async function updateTopicName(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { topicId } = req.params;
@@ -92,7 +92,7 @@ export async function updateTopicName(
 
 export async function deleteTopic(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { topicId } = req.params;

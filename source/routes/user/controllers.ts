@@ -4,14 +4,18 @@ import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
 import { UserNameUnavailableError } from "../../Errors/User";
-import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
+import {
+  RequestWithUser,
+  TypedResponse,
+  ResponseAsJson,
+} from "../../types/express";
 import UserRepository from "../../services/Repositories/User";
 
 const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
 
 export async function createUser(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { userName, firstName, lastName, password } = req.body;
@@ -46,7 +50,7 @@ export async function createUser(
 
 export async function getUser(
   req: RequestWithUser,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const user = req.user!;
@@ -69,7 +73,7 @@ export async function getUser(
 
 export async function updateUser(
   req: RequestWithUser,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { userName: newUserName, firstName, lastName, password } = req.body;

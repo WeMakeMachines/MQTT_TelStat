@@ -4,10 +4,11 @@ import { concat } from "rxjs";
 
 import { topicChange$ } from "../../../models/Topic";
 import config from "../../../config";
-import MongoDb, { OperationTypes } from "../../MongoDb";
+import MongoDb from "../../MongoDb";
 import mqttClient from "../../mqttClient";
 import TopicRepository from "../../Repositories/Topic";
 import PublisherRepository from "../../Repositories/Publisher";
+import { DbOperationTypes } from "../../../types/db";
 
 export const log: debug.IDebugger = debug(
   config.namespace + ":mqtt_subscriber"
@@ -56,13 +57,13 @@ export default class MqttSubscriber {
   private subscribeToTopicChangeEvents() {
     topicChange$.subscribe((change) => {
       if (
-        change.operationType === OperationTypes.UPDATE &&
+        change.operationType === DbOperationTypes.UPDATE &&
         change.fullDocument!._deleting
       ) {
         this.unsubscribeFromTopic(change.fullDocument!.name);
       }
 
-      if (change.operationType === OperationTypes.INSERT) {
+      if (change.operationType === DbOperationTypes.INSERT) {
         this.subscribeToTopic(change.fullDocument!.name);
       }
     });

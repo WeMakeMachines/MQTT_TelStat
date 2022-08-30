@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { UserType } from "../../types/schemas/User";
 
 import config from "../../config";
-import { JwtPayload } from "../../types";
+import { JwtPayload } from "../../types/jwt";
 
 const log: debug.IDebugger = debug(config.namespace + ":jsonwebtoken");
 

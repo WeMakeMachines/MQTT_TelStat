@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 
 import config from "../config";
 import { UserAuthorisationError } from "../Errors/User";
-import { RequestWithUser } from "../types";
+import { RequestWithUser } from "../types/express";
 import Jwt from "../helpers/jsonwebtoken";
 import UserRepository from "../services/Repositories/User";
 

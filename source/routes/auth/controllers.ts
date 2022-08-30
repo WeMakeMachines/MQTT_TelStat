@@ -5,7 +5,11 @@ import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
 import { UserAuthenticationError } from "../../Errors/User";
-import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
+import {
+  RequestWithUser,
+  TypedResponse,
+  ResponseAsJson,
+} from "../../types/express";
 import Jwt from "../../helpers/jsonwebtoken";
 import UserRepository from "../../services/Repositories/User";
 
@@ -13,7 +17,7 @@ const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
 
 export async function loginUser(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { userName, password } = req.body;
@@ -62,7 +66,7 @@ export async function loginUser(
 
 export async function logoutUser(
   req: RequestWithUser,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   res
     .clearCookie(config.jwtCookieName, {

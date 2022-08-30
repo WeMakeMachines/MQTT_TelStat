@@ -3,7 +3,11 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
-import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
+import {
+  RequestWithUser,
+  TypedResponse,
+  ResponseAsJson,
+} from "../../types/express";
 import PublisherRepository from "../../services/Repositories/Publisher";
 import TopicRepository from "../../services/Repositories/Topic";
 
@@ -15,7 +19,7 @@ class PublisherControllerError extends Error {}
 
 export async function createPublisher(
   req: RequestWithUser,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { name } = req.body;
@@ -40,7 +44,7 @@ export async function createPublisher(
 
 export async function getPublisherById(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { publisherId } = req.params;
@@ -68,7 +72,7 @@ export async function getPublisherById(
 
 export async function getAllPublishers(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const publishers = await PublisherRepository.getAll();
@@ -87,7 +91,7 @@ export async function getAllPublishers(
 
 export async function updatePublisherName(
   req: Request,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { publisherId } = req.params;
@@ -132,7 +136,7 @@ export async function updatePublisherTopic(req: Request, res: Response) {
 
 export async function deletePublisher(
   req: RequestWithUser,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { publisherId } = req.params;
@@ -161,7 +165,7 @@ export async function deletePublisher(
 
 export async function deletePublisherTelemetry(
   req: RequestWithUser,
-  res: TypedResponse<JsonResponse>
+  res: TypedResponse<ResponseAsJson>
 ) {
   try {
     const { publisherId } = req.params;

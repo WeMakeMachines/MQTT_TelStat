@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 
 import { PublisherNotFoundError } from "../../Errors/Publisher";
 import { UserAuthorisationError } from "../../Errors/User";
-import { RequestWithUser } from "../../types";
+import { RequestWithUser } from "../../types/express";
 import PublisherRepository from "../../services/Repositories/Publisher";
 
 export const validatePublisherName = () => [body("name").isString()];
