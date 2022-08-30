@@ -5,7 +5,7 @@ import config from "../config";
 import { UserAuthorisationError } from "../Errors/User";
 import { RequestWithUser } from "../types";
 import Jwt from "../helpers/jsonwebtoken";
-import UsersDAO from "../services/DAO/Users";
+import UserRepository from "../services/Repositories/User";
 
 export async function authoriseUser(
   req: RequestWithUser,
@@ -15,7 +15,7 @@ export async function authoriseUser(
   try {
     const token = req.cookies[config.jwtCookieName];
     const payload = await Jwt.verify(token);
-    const user = await UsersDAO.getById(payload.sub);
+    const user = await UserRepository.getById(payload.sub);
 
     if (!user) throw new UserAuthorisationError("Invalid token data");
 

@@ -2,10 +2,10 @@ import { NextFunction, Response } from "express";
 import { body } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 
-import { PublisherUnavailableError } from "../../Errors/Publisher";
+import { PublisherNotFoundError } from "../../Errors/Publisher";
 import { UserAuthorisationError } from "../../Errors/User";
 import { RequestWithUser } from "../../types";
-import PublishersDAO from "../../services/DAO/Publishers";
+import PublisherRepository from "../../services/Repositories/Publisher";
 
 export const validatePublisherName = () => [body("name").isString()];
 
@@ -26,15 +26,15 @@ export const validatePublisherOwner = async (
   try {
     const { publisherId } = req.params;
     const user = req.user!;
-    const publisher = await PublishersDAO.getById(publisherId);
+    const publisher = await PublisherRepository.getById(publisherId);
 
-    if (!publisher) throw new PublisherUnavailableError("Publisher not found");
+    if (!publisher) throw new PublisherNotFoundError("Publisher not found");
     if (!user._id.equals(publisher.owner._id))
       throw new UserAuthorisationError("User not authorised for this action");
 
     next();
   } catch (error) {
-    if (error instanceof PublisherUnavailableError) {
+    if (error instanceof PublisherNotFoundError) {
       return res.status(StatusCodes.NOT_FOUND).send({
         success: false,
         message: error.message,

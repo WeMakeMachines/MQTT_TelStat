@@ -4,9 +4,8 @@ import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
 import { TypedResponse, JsonResponse } from "../../types";
-import TopicsDAO from "../../services/DAO/Topics";
-import TopicsDTO from "../../services/DTO/Topics";
-import PublishersDAO from "../../services/DAO/Publishers";
+import PublisherRepository from "../../services/Repositories/Publisher";
+import TopicRepository from "../../services/Repositories/Topic";
 
 const log: debug.IDebugger = debug(config.namespace + ":controllers:topics");
 
@@ -18,7 +17,7 @@ export async function createTopic(
 ) {
   try {
     const { name } = req.body;
-    const newTopic = await TopicsDTO.create(name);
+    const newTopic = await TopicRepository.create(name);
 
     res
       .status(StatusCodes.OK)
@@ -37,7 +36,7 @@ export async function getTopicById(
 ) {
   try {
     const { topicId } = req.params;
-    const topic = await TopicsDAO.getById(topicId);
+    const topic = await TopicRepository.getById(topicId);
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -56,7 +55,7 @@ export async function getAllTopics(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const topics = await TopicsDAO.getAll();
+    const topics = await TopicRepository.getAll();
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -78,7 +77,7 @@ export async function updateTopicName(
     const { topicId } = req.params;
     const { name } = req.body;
 
-    await TopicsDTO.rename({ topicId, name });
+    await TopicRepository.rename({ topicId, name });
 
     res
       .status(StatusCodes.OK)
@@ -98,13 +97,15 @@ export async function deleteTopic(
   try {
     const { topicId } = req.params;
 
-    const publishers = await PublishersDAO.getAllPublisherIdsForTopic(topicId);
+    const publishers = await PublisherRepository.getAllPublisherIdsForTopic(
+      topicId
+    );
 
     if (publishers.length) {
       throw new TopicControllerError("Unable to delete topic while in use");
     }
 
-    await TopicsDTO.delete(topicId);
+    await TopicRepository.delete(topicId);
 
     res
       .status(StatusCodes.OK)

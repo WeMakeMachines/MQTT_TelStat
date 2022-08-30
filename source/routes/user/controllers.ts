@@ -5,8 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import config from "../../config";
 import { UserNameUnavailableError } from "../../Errors/User";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
-import UsersDAO from "../../services/DAO/Users";
-import UsersDTO from "../../services/DTO/Users";
+import UserRepository from "../../services/Repositories/User";
 
 const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
 
@@ -17,14 +16,14 @@ export async function createUser(
   try {
     const { userName, firstName, lastName, password } = req.body;
 
-    const isUserNameAvailable = await UsersDAO.checkUserNameIsAvailable(
+    const isUserNameAvailable = await UserRepository.checkUserNameIsAvailable(
       userName
     );
 
     if (!isUserNameAvailable)
       throw new UserNameUnavailableError("Username not available");
 
-    await UsersDTO.createUser({
+    await UserRepository.createUser({
       userName,
       firstName,
       lastName,
@@ -77,7 +76,7 @@ export async function updateUser(
 
     const user = req.user!;
 
-    await UsersDTO.updateUser({
+    await UserRepository.updateUser({
       userName: user.userName,
       newUserName,
       firstName,

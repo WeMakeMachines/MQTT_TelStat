@@ -1,1 +1,1 @@
-export class PublisherUnavailableError extends Error {}
+export class PublisherNotFoundError extends Error {}

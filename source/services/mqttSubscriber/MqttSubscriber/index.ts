@@ -6,9 +6,8 @@ import { topicChange$ } from "../../../models/Topic";
 import config from "../../../config";
 import MongoDb, { OperationTypes } from "../../MongoDb";
 import mqttClient from "../../mqttClient";
-import TopicsDAO from "../../DAO/Topics";
-import PublishersDTO from "../../DTO/Publishers";
-import PublishersDAO from "../../DAO/Publishers";
+import TopicRepository from "../../Repositories/Topic";
+import PublisherRepository from "../../Repositories/Publisher";
 
 export const log: debug.IDebugger = debug(
   config.namespace + ":mqtt_subscriber"
@@ -45,7 +44,7 @@ export default class MqttSubscriber {
   }
 
   private subscribeToTopics() {
-    TopicsDAO.getAll().then((topics) => {
+    TopicRepository.getAll().then((topics) => {
       topics.forEach((topic) => this.subscribeToTopic(topic.name));
     });
   }
@@ -80,7 +79,7 @@ export default class MqttSubscriber {
 
   private async publishMessage(topic: string, payload: Payload) {
     try {
-      const publisher = await PublishersDAO.getByNanoId(payload.nanoId);
+      const publisher = await PublisherRepository.getByNanoId(payload.nanoId);
 
       if (
         !publisher.topic ||
@@ -88,7 +87,7 @@ export default class MqttSubscriber {
       )
         throw new MqttSubscriberError("Publisher topic mismatch");
 
-      await PublishersDTO.publishTelemetry(publisher._id, payload.data);
+      await PublisherRepository.publishTelemetry(publisher._id, payload.data);
     } catch (error) {
       log((error as Error).message);
 

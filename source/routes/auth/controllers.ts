@@ -7,7 +7,7 @@ import config from "../../config";
 import { UserAuthenticationError } from "../../Errors/User";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
 import Jwt from "../../helpers/jsonwebtoken";
-import UsersDAO from "../../services/DAO/Users";
+import UserRepository from "../../services/Repositories/User";
 
 const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
 
@@ -17,7 +17,7 @@ export async function loginUser(
 ) {
   try {
     const { userName, password } = req.body;
-    const user = await UsersDAO.getByUsername(userName);
+    const user = await UserRepository.getByUsername(userName);
 
     if (!user)
       throw new UserAuthenticationError("Username or password incorrect");

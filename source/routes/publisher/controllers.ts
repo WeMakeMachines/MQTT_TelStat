@@ -4,10 +4,8 @@ import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
 import { RequestWithUser, TypedResponse, JsonResponse } from "../../types";
-import PublishersDAO from "../../services/DAO/Publishers";
-import PublishersDTO from "../../services/DTO/Publishers";
-import TopicsDAO from "../../services/DAO/Topics";
-import TopicsDTO from "../../services/DTO/Topics";
+import PublisherRepository from "../../services/Repositories/Publisher";
+import TopicRepository from "../../services/Repositories/Topic";
 
 const log: debug.IDebugger = debug(
   config.namespace + ":controllers:publishers"
@@ -22,7 +20,7 @@ export async function createPublisher(
   try {
     const { name } = req.body;
     const user = req.user!;
-    const publisher = await PublishersDTO.create({
+    const publisher = await PublisherRepository.create({
       userId: user._id,
       name,
     });
@@ -46,7 +44,7 @@ export async function getPublisherById(
 ) {
   try {
     const { publisherId } = req.params;
-    const publisher = await PublishersDAO.getById(publisherId);
+    const publisher = await PublisherRepository.getById(publisherId);
 
     if (!publisher) throw new PublisherControllerError("Publisher not found");
 
@@ -73,7 +71,7 @@ export async function getAllPublishers(
   res: TypedResponse<JsonResponse>
 ) {
   try {
-    const publishers = await PublishersDAO.getAll();
+    const publishers = await PublisherRepository.getAll();
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -95,7 +93,7 @@ export async function updatePublisherName(
     const { publisherId } = req.params;
     const { name } = req.body;
 
-    await PublishersDTO.rename({
+    await PublisherRepository.rename({
       publisherId,
       name,
     });
@@ -116,7 +114,7 @@ export async function updatePublisherTopic(req: Request, res: Response) {
     const { publisherId } = req.params;
     const { topicId } = req.body;
 
-    await PublishersDTO.changeTopic({
+    await PublisherRepository.changeTopic({
       publisherId,
       topicId,
     });
@@ -139,12 +137,12 @@ export async function deletePublisher(
   try {
     const { publisherId } = req.params;
 
-    await PublishersDTO.delete(publisherId);
+    await PublisherRepository.delete(publisherId);
 
-    const topic = await TopicsDAO.getTopicForPublisher(publisherId);
+    const topic = await TopicRepository.getTopicForPublisher(publisherId);
 
     if (topic) {
-      await TopicsDTO.removePublisher({
+      await TopicRepository.removePublisher({
         topicId: topic._id,
         publisherId,
       });
@@ -168,7 +166,7 @@ export async function deletePublisherTelemetry(
   try {
     const { publisherId } = req.params;
 
-    await PublishersDTO.deleteTelemetry(publisherId);
+    await PublisherRepository.deleteTelemetry(publisherId);
 
     res
       .status(StatusCodes.OK)
