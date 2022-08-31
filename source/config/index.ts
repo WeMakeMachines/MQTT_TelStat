@@ -1,6 +1,8 @@
-import dotenv, { DotenvParseOutput } from "dotenv";
+import { DotenvParseOutput } from "dotenv";
 import fs from "fs";
 import debug from "debug";
+
+import environment from "./environment";
 
 interface EnvironmentVariables extends DotenvParseOutput {
   TELSTAT_PORT: string;
@@ -9,10 +11,7 @@ interface EnvironmentVariables extends DotenvParseOutput {
 }
 
 const namespace = "app.telstat";
-
 const log: debug.IDebugger = debug(`${namespace}:config`);
-
-class ConfigError extends Error {}
 
 class Config {
   public readonly jwtCookieName = "token";
@@ -36,7 +35,9 @@ class Config {
   }
 }
 
-const { parsed } = dotenv.config();
-const config = new Config(parsed as EnvironmentVariables, namespace);
+const config = new Config(
+  environment.dotenvParseOutput as EnvironmentVariables,
+  namespace
+);
 
 export default config;

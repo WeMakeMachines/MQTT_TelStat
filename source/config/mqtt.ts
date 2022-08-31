@@ -1,4 +1,6 @@
-import dotenv, { DotenvParseOutput } from "dotenv";
+import { DotenvParseOutput } from "dotenv";
+
+import environment from "./environment";
 
 interface EnvironmentVariables extends DotenvParseOutput {
   MQTT_BROKER_HOST: string;
@@ -6,8 +8,6 @@ interface EnvironmentVariables extends DotenvParseOutput {
   MQTT_BROKER_USER: string;
   MQTT_BROKER_PASS: string;
 }
-
-class MqttConfigError extends Error {}
 
 class MqttConfig {
   public readonly mqttBrokerHost: string;
@@ -23,7 +23,8 @@ class MqttConfig {
   }
 }
 
-const { parsed } = dotenv.config();
-const mqttConfig = new MqttConfig(parsed as EnvironmentVariables);
+const mqttConfig = new MqttConfig(
+  environment.dotenvParseOutput as EnvironmentVariables
+);
 
 export default mqttConfig;

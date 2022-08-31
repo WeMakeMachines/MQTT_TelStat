@@ -1,4 +1,6 @@
-import dotenv, { DotenvParseOutput } from "dotenv";
+import { DotenvParseOutput } from "dotenv";
+
+import environment from "./environment";
 
 interface EnvironmentVariables extends DotenvParseOutput {
   MONGO_DB_HOST: string;
@@ -6,8 +8,6 @@ interface EnvironmentVariables extends DotenvParseOutput {
   MONGO_DB_USER: string;
   MONGO_DB_PASS: string;
 }
-
-class DbConfigError extends Error {}
 
 class DbConfig {
   public readonly dbHost: string;
@@ -23,7 +23,8 @@ class DbConfig {
   }
 }
 
-const { parsed } = dotenv.config();
-const dbConfig = new DbConfig(parsed as EnvironmentVariables);
+const dbConfig = new DbConfig(
+  environment.dotenvParseOutput as EnvironmentVariables
+);
 
 export default dbConfig;
