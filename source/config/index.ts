@@ -10,7 +10,7 @@ interface EnvironmentVariables extends DotenvParseOutput {
   PUBLIC_KEY_FILENAME: string;
 }
 
-const namespace = "app.telstat";
+const namespace = "telstat";
 const log: debug.IDebugger = debug(`${namespace}:config`);
 
 class Config {

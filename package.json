@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build": "rm -rf ./build && export DEBUG=app.telstat*, TELSTAT_ENV=production && tsc --build && node ./build/index.js",
-    "dev": "export DEBUG=app.telstat*, TELSTAT_ENV=development  && nodemon ./source/index.ts",
+    "build": "rm -rf ./build && export DEBUG=telstat*, TELSTAT_ENV=production && tsc --build && node ./build/index.js",
+    "dev": "export DEBUG=telstat*, TELSTAT_ENV=development && nodemon ./source/index.ts",
     "generate-keys": "node ./scripts/generateKeyPair.js"
   },
   "dependencies": {
