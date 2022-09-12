@@ -9,6 +9,7 @@ import routes from "./routes";
 import log from "./helpers/debug";
 import MongoDb from "./services/MongoDb";
 import mqttSubscriber from "./services/mqttSubscriber";
+import { waitForServices } from "./middleware/setup";
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -26,7 +27,7 @@ app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
 
-app.use("/api", routes);
+app.use("/api", waitForServices, routes);
 
 server.listen(config.port, () => {
   log("server", `Server running at http://localhost:${config.port}`);
