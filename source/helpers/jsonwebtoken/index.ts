@@ -1,11 +1,9 @@
-import debug from "debug";
 import jwt from "jsonwebtoken";
 import { UserType } from "../../types/schemas/User";
 
 import config from "../../config";
+import log from "../debug";
 import { JwtPayload } from "../../types/jwt";
-
-const log: debug.IDebugger = debug(config.namespace + ":jsonwebtoken");
 
 export default class Jwt {
   public static async sign(user: UserType): Promise<string> {
@@ -21,11 +19,9 @@ export default class Jwt {
         algorithm: "RS256",
       });
 
-      //jwt.sign({ user: "testuser" }, secret.secretToken, { expiresIn: "1h" });
-
       return Promise.resolve(signedToken);
     } catch (error) {
-      log(error);
+      log("jsonwebtoken", (error as Error).message);
       return Promise.reject();
     }
   }

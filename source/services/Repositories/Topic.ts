@@ -1,8 +1,8 @@
 import mongoose, { FilterQuery } from "mongoose";
 
+import { TopicNotFoundError, TopicUnavailableError } from "../../Errors/Topic";
 import Topic from "../../models/Topic";
 import { TopicType } from "../../types/schemas/Topic";
-import { TopicNotFoundError, TopicUnavailableError } from "../../Errors/Topic";
 
 interface TopicAggregate extends TopicType {
   totalPublishers: number;

@@ -1,19 +1,16 @@
-import debug from "debug";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import config from "../../config";
+import log from "../../helpers/debug";
+import PublisherRepository from "../../services/Repositories/Publisher";
+import TopicRepository from "../../services/Repositories/Topic";
 import {
   RequestWithUser,
   TypedResponse,
   ResponseAsJson,
 } from "../../types/express";
-import PublisherRepository from "../../services/Repositories/Publisher";
-import TopicRepository from "../../services/Repositories/Topic";
 
-const log: debug.IDebugger = debug(
-  config.namespace + ":controllers:publishers"
-);
+const namespace = "controllers:publishers";
 
 class PublisherControllerError extends Error {}
 
@@ -35,7 +32,7 @@ export async function createPublisher(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher created", data: publisher });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -63,7 +60,7 @@ export async function getPublisherById(
         .json({ success: false, message: error.message });
     }
 
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -82,7 +79,7 @@ export async function getAllPublishers(
       data: publishers,
     });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -106,7 +103,7 @@ export async function updatePublisherName(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher renamed" });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -127,7 +124,7 @@ export async function updatePublisherTopic(req: Request, res: Response) {
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher updated" });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -156,7 +153,7 @@ export async function deletePublisher(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Publisher deleted" });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -176,7 +173,7 @@ export async function deletePublisherTelemetry(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Telemetry deleted" });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });

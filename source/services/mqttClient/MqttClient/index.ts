@@ -1,15 +1,13 @@
-import debug from "debug";
 import mqtt, { Client } from "mqtt";
 import { fromEvent, Observable } from "rxjs";
 
-import config from "../../../config";
 import mqttEvents from "./mqttEvents";
-
-export const log: debug.IDebugger = debug(config.namespace + ":mqtt_client");
+import log from "../../../helpers/debug";
 
 class MqttError extends Error {}
 
 export default class MqttClient {
+  public readonly namespace: string = "mqtt_client";
   public readonly client: Client;
   public readonly connection$: Observable<any>;
   public readonly message$: Observable<any>;
@@ -25,7 +23,7 @@ export default class MqttClient {
     password: string;
     port: number;
   }) {
-    log("Connecting to MQTT broker...");
+    log(this.namespace, "Connecting to MQTT broker...");
 
     this.client = mqtt.connect(host, {
       username,
@@ -35,7 +33,7 @@ export default class MqttClient {
     this.connection$ = fromEvent(this.client, "connect");
     this.message$ = fromEvent(this.client, "message");
 
-    mqttEvents(this.client);
+    mqttEvents(this.namespace, this.client);
   }
 
   subscribe(topic: string): void {
@@ -48,7 +46,7 @@ export default class MqttClient {
         throw new MqttError(error.message);
       }
 
-      log("Subscribed to topic " + topic);
+      log(this.namespace, "Subscribed to topic " + topic);
     });
   }
 
@@ -62,7 +60,7 @@ export default class MqttClient {
         throw new MqttError(error.message);
       }
 
-      log("Unsubscribed to topic " + topic);
+      log(this.namespace, "Unsubscribed to topic " + topic);
     });
   }
 }

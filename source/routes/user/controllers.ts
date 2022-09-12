@@ -1,17 +1,16 @@
-import debug from "debug";
 import { Request } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import config from "../../config";
 import { UserNameUnavailableError } from "../../Errors/User";
+import log from "../../helpers/debug";
+import UserRepository from "../../services/Repositories/User";
 import {
   RequestWithUser,
   TypedResponse,
   ResponseAsJson,
 } from "../../types/express";
-import UserRepository from "../../services/Repositories/User";
 
-const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
+const namespace = "controllers:user";
 
 export async function createUser(
   req: Request,
@@ -41,7 +40,7 @@ export async function createUser(
         .status(StatusCodes.CONFLICT)
         .json({ success: false, message: error.message });
     }
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -64,7 +63,7 @@ export async function getUser(
       },
     });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -90,7 +89,7 @@ export async function updateUser(
 
     res.status(StatusCodes.OK).json({ success: true, message: "User updated" });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });

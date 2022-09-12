@@ -1,13 +1,7 @@
-import debug from "debug";
 import mongoose from "mongoose";
 import { fromEvent, Observable } from "rxjs";
 
-import config from "../../config/";
 import mongoDbEvents from "./mongoDbEvents";
-
-export const log: debug.IDebugger = debug(
-  config.namespace + ":service:mongodb"
-);
 
 class MongoDbError extends Error {}
 

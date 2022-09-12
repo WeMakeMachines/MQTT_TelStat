@@ -1,13 +1,12 @@
-import debug from "debug";
 import { Request } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import config from "../../config";
-import { TypedResponse, ResponseAsJson } from "../../types/express";
+import log from "../../helpers/debug";
 import PublisherRepository from "../../services/Repositories/Publisher";
 import TopicRepository from "../../services/Repositories/Topic";
+import { TypedResponse, ResponseAsJson } from "../../types/express";
 
-const log: debug.IDebugger = debug(config.namespace + ":controllers:topics");
+const namespace = "controllers:topics";
 
 class TopicControllerError extends Error {}
 
@@ -23,7 +22,7 @@ export async function createTopic(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Topic created", data: newTopic });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -43,7 +42,7 @@ export async function getTopicById(
       data: topic,
     });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -62,7 +61,7 @@ export async function getAllTopics(
       data: topics,
     });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -83,7 +82,7 @@ export async function updateTopicName(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Topic renamed" });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });
@@ -111,7 +110,7 @@ export async function deleteTopic(
       .status(StatusCodes.OK)
       .json({ success: true, message: "Topic deleted" });
   } catch (error) {
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });

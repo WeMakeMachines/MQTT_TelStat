@@ -1,18 +1,13 @@
-import debug from "debug";
 import { Packet } from "mqtt";
 import { concat } from "rxjs";
 
-import { topicChange$ } from "../../../models/Topic";
-import config from "../../../config";
 import MongoDb from "../../MongoDb";
 import mqttClient from "../../mqttClient";
 import TopicRepository from "../../Repositories/Topic";
 import PublisherRepository from "../../Repositories/Publisher";
+import log from "../../../helpers/debug";
+import { topicChange$ } from "../../../models/Topic";
 import { DbOperationTypes } from "../../../types/db";
-
-export const log: debug.IDebugger = debug(
-  config.namespace + ":mqtt_subscriber"
-);
 
 type Payload = {
   nanoId: string;
@@ -22,6 +17,8 @@ type Payload = {
 class MqttSubscriberError extends Error {}
 
 export default class MqttSubscriber {
+  public readonly namespace: string = "mqtt_subscriber";
+
   public initialise() {
     this.awaitServices().then(() => {
       this.subscribeToTopics();
@@ -74,7 +71,9 @@ export default class MqttSubscriber {
       const [topic, payloadAsBuffer] = message;
       const payload = JSON.parse(payloadAsBuffer.toString());
 
-      this.publishMessage(topic, payload).catch((error) => log(error));
+      this.publishMessage(topic, payload).catch((error) =>
+        log(this.namespace, error.message)
+      );
     });
   }
 
@@ -90,7 +89,7 @@ export default class MqttSubscriber {
 
       await PublisherRepository.publishTelemetry(publisher._id, payload.data);
     } catch (error) {
-      log((error as Error).message);
+      log(this.namespace, (error as Error).message);
 
       return Promise.reject(
         "Unable to publish telemetry: " + (error as Error).message

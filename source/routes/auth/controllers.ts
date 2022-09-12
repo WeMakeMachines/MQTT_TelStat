@@ -1,19 +1,19 @@
-import debug from "debug";
 import bcrypt from "bcrypt";
 import { Request } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import config from "../../config";
 import { UserAuthenticationError } from "../../Errors/User";
+import Jwt from "../../helpers/jsonwebtoken";
+import log from "../../helpers/debug";
+import UserRepository from "../../services/Repositories/User";
 import {
   RequestWithUser,
   TypedResponse,
   ResponseAsJson,
 } from "../../types/express";
-import Jwt from "../../helpers/jsonwebtoken";
-import UserRepository from "../../services/Repositories/User";
 
-const log: debug.IDebugger = debug(config.namespace + ":controllers:user");
+const namespace = "controllers:user";
 
 export async function loginUser(
   req: Request,
@@ -57,7 +57,7 @@ export async function loginUser(
         .json({ success: false, message: error.message });
     }
 
-    log((error as Error).message);
+    log(namespace, (error as Error).message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "An unspecified error occurred" });

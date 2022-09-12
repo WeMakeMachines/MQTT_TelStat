@@ -1,12 +1,12 @@
 import mqtt from "mqtt";
 
+import log from "../../../helpers/debug";
 import mqttConfig from "../../../config/mqtt";
-import { log } from "./";
 
-export default function mqttEvents(client: mqtt.Client) {
+export default function mqttEvents(namespace: string, client: mqtt.Client) {
   client.on("connect", () =>
-    log(`Connected to MQTT Broker on ${mqttConfig.mqttBrokerHost}`)
+    log(namespace, `Connected to MQTT Broker on ${mqttConfig.mqttBrokerHost}`)
   );
 
-  client.on("error", (error) => log(error.message));
+  client.on("error", (error) => log(namespace, error.message));
 }
